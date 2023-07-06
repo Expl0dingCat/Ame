@@ -17,7 +17,7 @@ Ame is a fully integrated, open-source virtual assistant built to enhance your d
 ## The meaning behind "Ame"
 The name "Ame" originates from the Japanese word "あめ" (pronounced ah-meh), which translates to "rain" in English. Like rain, Ame represents a refreshing and nourishing presence in your digital life. Just as raindrops bring life to the earth, Ame breathes life into your digital environment, providing support and efficiency.
 
-By choosing the name Ame, I aim to embody the qualities of adaptability, revitalization, and reliability that rain symbolizes. I hope that Ame can be the reliable companion that brings a refreshing experience to your daily digital interactions.
+By choosing the name Ame, I aim to embody the qualities of adaptability, and revitalization, that rain symbolizes. I hope that Ame can be the reliable companion that brings a refreshing experience to your daily digital interactions.
 
 ## Progress (`v1`)
 🔴 Planned
