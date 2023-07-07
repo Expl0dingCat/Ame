@@ -10,7 +10,7 @@ Ame is a fully integrated, open-source virtual assistant built to enhance your d
 
 **Open-Source**: Ame will be entirely open-source. This allows for knowledge sharing and the continuous improvement of Ame while contributing to the open-source community and democratizing ML research in the process.
 
-**Locally Run and Privacy-Focused**: Ame prioritizes user privacy and data control by operating entirely on the user's local machine. By keeping the execution local, Ame eliminates the need to rely on external servers for processing user queries, ensuring that personal information remains secure and confidential.
+**Locally Run and Privacy-Focused**: Ame prioritizes user privacy and data control by operating entirely on the user's local machine.
 
 **Long-term Memory**: Ame utilizes a vector database that optimizes memory storage and retrieval, enabling Ame to access data that goes beyond the context limit of her model.
 
@@ -33,8 +33,9 @@ Text-to-speech                |  🟡
 Vision system                 |  🔴
 Long-term memory              |  🟢
 Primary controller            |  🟢
-Server/client interface       |  🟢
 Module handler                |  🟡
+Server/client interface       |  🟢
+Client UI                     |  🔴
 Telegram interface            |  🔴
 
 ### Fine-tuning LLaMA
