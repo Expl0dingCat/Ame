@@ -30,6 +30,7 @@ Component                     | Status
 ----------------------------- | -----
 Speech-to-text                |  🟢
 Text-to-speech                |  🟡
+Vision system                 |  🔴
 Long-term memory              |  🟢
 Primary controller            |  🟢
 Server/client interface       |  🟢
