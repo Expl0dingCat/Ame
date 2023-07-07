@@ -33,7 +33,7 @@ Text-to-speech                |  🟡
 Long-term memory              |  🟢
 Primary controller            |  🟢
 Server/client interface       |  🟢
-Module handler                |  🔴
+Module handler                |  🟡
 Telegram interface            |  🔴
 
 ### Fine-tuning LLaMA
@@ -50,7 +50,7 @@ Training                      |  🔴
 
 Module                        | Status 
 ----------------------------- | -----
-Weather                       |  🔴
+Weather                       |  🟡
 Google Calendar               |  🔴
 News                          |  🔴
 DeepL                         |  🔴
