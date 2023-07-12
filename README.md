@@ -14,7 +14,47 @@ Ame is a fully integrated, open-source virtual assistant built to enhance your d
 
 **Long-term Memory**: Ame utilizes a vector database that optimizes memory storage and retrieval, enabling Ame to access data that goes beyond the context limit of her model.
 
-## The meaning behind "Ame"
+## Usage 🚀
+
+### Install requirements
+```bash
+pip3 install sentence-transformers
+pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+set CMAKE_ARGS="-DLLAMA_CUBLAS=on"
+set FORCE_CMAKE=1
+pip3 install llama-cpp-python --no-cache-dir
+pip3 install openai-whisper
+pip3 install pyaudio
+pip3 install aiohttp
+pip3 install keyboard
+pip3 install transformers
+```
+
+### Server/client
+Move `server.py` (interfaces/server-client/) to the root folder then run:
+```bash
+python server.py
+```
+
+To access the server locally make sure `Local = True` in `client.py` (interfaces/server-client/), to access it externally, modify the base URL and set `Local = False`, then run:
+```bash
+python client.py
+```
+
+### API
+Create a Python file in the root folder and input and input:
+
+```py
+from controller import controller
+
+# Initialize the controller, see controller.py for documentation
+controller = controller()
+
+# Generate text based on the input "Hello, World!"
+response = controller.generate_response("Hello, World!")
+```
+
+## The meaning behind "Ame" 💧
 The name "Ame" originates from the Japanese word "あめ" (pronounced ah-meh), which translates to "rain" in English. Like rain, Ame represents a refreshing and nourishing presence in your digital life. Just as raindrops bring life to the earth, Ame breathes life into your digital environment, providing support and efficiency.
 
 By choosing the name Ame, I aim to embody the qualities of adaptability, and revitalization, that rain symbolizes. I hope that Ame can be the reliable companion that brings a refreshing experience to your daily digital interactions.
