@@ -84,6 +84,7 @@ Client UI                     |  🔴
 Telegram interface            |  🔴
 
 ### Fine-tuning LLaMA
+Currently waiting for the second version of LLaMA.
 
 Step                          | Status 
 ----------------------------- | -----
