@@ -1,5 +1,5 @@
 # Ame (あめ) Project
-Ame is a fully integrated, open-source virtual assistant built to enhance your digital experience. She leverages the power of a custom fine-tuned 13 billion parameter LLaMA model to provide personalized and intuitive interaction.
+Ame is a fully integrated, multi-modal, open-source virtual assistant built to enhance your digital experience. She leverages the power of a custom fine-tuned 13 billion parameter LLaMA model to provide personalized and intuitive interaction.
 
 ## Key features 🚀
 **Customizable Modules**: Ame's modular design allows for easy customization and extensibility. Each module serves a specific function, such as managing calendars, providing weather updates, or assisting with personal tasks—Ame adapts to you. Developers can create their own modules or modify existing ones to tailor Ame's capabilities to their specific requirements.
