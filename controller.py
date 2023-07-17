@@ -2,6 +2,7 @@ from language.llm_handler import ai
 from memory_handler import memory
 from voice.stt_handler import stt
 from voice.tts_handler import tts
+from vision.vision_handler import vision
 from module_handler import modules
 from datetime import datetime
 import os
@@ -51,7 +52,7 @@ class controller:
         listen: Transcribes audio input to text.
         run_module: Runs a given module. 
     """
-    def __init__(self, verbose=True, log=True, memory_path=None, language_model_path=None, speech_to_text_model=None, text_to_speech_model=None, tts_temperature=0.6, max_tokens=128, temperature=0.85, context_limit=2048, virtual_context_limit=1024, use_gpu=True, debug=False):
+    def __init__(self, verbose=True, log=True, memory_path=None, language_model_path=None, speech_to_text_model=None, text_to_speech_model=None, tts_temperature=0.6, vision_model=None, max_tokens=128, temperature=0.85, context_limit=2048, virtual_context_limit=1024, use_gpu=True, debug=False):
         self.debug = debug
         if verbose:
             self.verbose = True
@@ -106,10 +107,16 @@ class controller:
             self.stt = stt(speech_to_text_model)
         self.vprint('Initializing text-to-speech engine...')
         if text_to_speech_model == None:
-            self.vprint('No text-to-speech model specified, using default: en_speaker_9')
-            self.tts = tts('en_speaker_9')
+            self.vprint('No text-to-speech model specified, using default: v2/en_speaker_9')
+            self.tts = tts('v2/en_speaker_9')
         else:    
             self.tts = tts(text_to_speech_model)
+        self.vprint('Initializing vision engine...')
+        if vision_model == None:
+            self.vprint('No vision model specified, using default: default vision model')
+            self.vision = vision('default vision model')
+        else:    
+            self.vision = vision(text_to_speech_model)
         self.vprint('All initialized. Controller ready and on standby.')
 
     def __call__(self):
@@ -126,15 +133,44 @@ class controller:
         self.vprint(f'Recieved evaluation request: {input}')
         output = eval(str(input))
         return output
-            
-    def full_pipeline(self, listen_input):
+
+    def user_cmds(self, input):
+        if input == 'clear_conversation':
+            self.current = []
+            return True
+        if input == 'shutdown':
+            self.vprint('User sent shutdown command.', logging.WARNING)
+            exit()
+        else:
+            return False
+
+    def full_pipeline(self, listen_input, img=None):
         self.vprint(f'Full system initiated, processing speech input...')
         user_input = self.listen(listen_input)
+        if self.user_cmds(user_input):
+            return f"User command detected: {user_input}"
         self.vprint(f'Speech input: {user_input}')
+        if img:
+            self.vprint(f'Processing image input...')
+            desc = self.see(img)
+            output = self.generate_response(f'{user_input} [user sent an image: {desc}]')
         output = self.generate_response(user_input)
         audio_output = self.speak(output)
         self.vprint(f'Full system completed, returning response: {output}')
         return user_input, output, audio_output
+    
+    def text_pipeline(self, input, img=None):
+        self.vprint(f'Text pipeline initiated, processing input: {input}')
+        if self.user_cmds(input):
+            return f"User command detected: {input}"
+        if img:
+            self.vprint(f'Processing image input...')
+            desc = self.see(img)
+            output = self.generate_response(f'{input} [user sent an image: {desc}]')
+        output = self.generate_response(input)
+        audio_output = self.speak(output)
+        self.vprint(f'Text pipeline completed, returning response: {output}')
+        return output, audio_output
 
     def generate_response(self, user_input):
         self.vprint(f'Generating response: {user_input}')
@@ -146,6 +182,8 @@ class controller:
         f'Current date: {datetime.now().strftime("%d/%m/%Y")}',
         'Past conversation:',
         *past,
+        'Utilities available to Ame, she can use these at any time by placing them at the end of her response:',
+        '[end] - Ends the conversation'
         '### Assistant',
         *self.current,
         f'USER: {user_input}',
@@ -188,6 +226,16 @@ class controller:
         self.vprint('Listening to audio input...')
         output = self.stt.transcribe(input)
         self.vprint(f'Transcription received: {output}')
+
+        return output
+
+    def see(self, input):
+        if input == None:
+            self.vprint('No input image specified.', logging.ERROR)
+            return "No input image specified."
+        self.vprint('Analyzing image...')
+        output = self.vision.describe(input)
+        self.vprint(f'Image analysis complete: {output}')
 
         return output
 
