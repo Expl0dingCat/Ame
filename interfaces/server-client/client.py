@@ -6,8 +6,8 @@ import os
 import shlex
 
 # If the client and server are running locally, set this to True
-local = True
-base_url = 'http://127.0.0.1:5440'
+local = False
+base_url = 'https://4ecf-99-246-208-47.ngrok-free.app'
 
 def generate_response(input: str):
     return requests.post(f'{base_url}/api/v1/generate', json={'input': input})
@@ -18,7 +18,7 @@ def listen_response(input: str):
     else:
         with open(input, 'rb') as f:
             file = {'file': f}
-        return requests.post(f'{base_url}/api/v1/listen', json={'input': 'file'}, files=file)
+            return requests.post(f'{base_url}/api/v1/listen', json={'input': 'file'}, files=file)
 
 def speak_response(input: str):
     if local:
@@ -27,7 +27,7 @@ def speak_response(input: str):
         request = requests.post(f'{base_url}/api/v1/speak', json={'input': input})
         with open('speak_out_audio.wav', 'wb') as f:
             f.write(request.content)
-        return request, os.path.abspath('speak_out_audio.wav')
+            return request, os.path.abspath('speak_out_audio.wav')
 
 def full_response(input: str):
     if local:
@@ -35,9 +35,13 @@ def full_response(input: str):
     else:
         with open(input, 'rb') as f:
             file = {'file': f}
-        request = requests.post(f'{base_url}/api/v1/full', json={'input': 'file'}, files=file)
+            request = requests.post(f'{base_url}/api/v1/full', json={'input': 'file'}, files=file)
         with open('out_audio.wav', 'wb') as f:
-            f.write(request.content)
+            while True:
+                chunk = response.content
+                if not chunk:
+                    break
+                f.write(chunk)
         return request.json(), os.path.abspath('out_audio.wav')
 
 def send_command(input: str):
@@ -97,7 +101,6 @@ if __name__ == '__main__':
     if inmth == 'voice':
         print('initiating voice input...')
         pipe()
-        print('Ready, press V to speak.')
     elif inmth == 'text':
         while True:
             intxt = input('USER: ')
