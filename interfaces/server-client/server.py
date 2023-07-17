@@ -8,7 +8,8 @@ controller = controller(verbose=True, # Print to stdout
                         memory_path=None, # Path to memory db (pickle.gz)
                         language_model_path=None, # Path to language model (GGML)
                         speech_to_text_model='base.en', # Speech-to-text model
-                        text_to_speech_model_path='path/to/tts_model', # Text-to-speech model (path)
+                        text_to_speech_model=None, # Text-to-speech model
+                        tts_temperature=0.6, # Temperature for the TTS model (0.0-1.0)
                         max_tokens=128, # Max tokens to generate
                         temperature=0.85, # Temperature (0.0-1.0)
                         use_gpu=True, # Use GPU
@@ -27,7 +28,7 @@ async def handle_listen(request):
     if request.content_type == 'multipart/form-data':
         reader = await request.multipart()
         field = await reader.next()
-        with open('speech.mp3', 'wb') as f:
+        with open('speech.wav', 'wb') as f:
             while True:
                 chunk = await field.read_chunk()
                 if not chunk:
@@ -44,21 +45,23 @@ async def handle_listen(request):
 async def handle_speak(request):
     response = await request.json()
     input = response['input']
-    response = controller.speak(input)
-    return web.json_response(response)
+    userinput, output, audio_output = controller.speak(input)
+    response = [userinput, output]
+    return web.json_response(response), web.FileResponse(path=audio_output)
 
 async def handle_full(request):
     if request.content_type == 'multipart/form-data':
         reader = await request.multipart()
         field = await reader.next()
-        with open('speech.mp3', 'wb') as f:
+        with open('speech.wav', 'wb') as f:
             while True:
                 chunk = await field.read_chunk()
                 if not chunk:
                     break
                 f.write(chunk)
-        response = controller.full_pipeline(os.path.abspath(f.name))
-        return web.json_response(response)
+        userinput, output, audio_output = controller.full_pipeline(os.path.abspath(f.name))
+        response = [userinput, output]
+        return web.json_response(response), web.FileResponse(path=audio_output)
     else:
         response = await request.json()
         input = response['input']
