@@ -28,6 +28,7 @@ pip3 install pyaudio
 pip3 install aiohttp
 pip3 install keyboard
 pip3 install transformers
+pip3 install git+https://github.com/suno-ai/bark.git
 ```
 - You must use torch (and its associated packages) version 2.0.0+ or it will break
 - Ame was designed on Python 3.10.11
