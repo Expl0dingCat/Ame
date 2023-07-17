@@ -9,7 +9,7 @@ from scipy.io.wavfile import write as write_wav
 # Almost all of this is stolen from the Bark repo.
 
 class tts:
-    def __init__(self, model_name='en_speaker_9', temperature=0.6) -> None:
+    def __init__(self, model_name='v2/en_speaker_9', temperature=0.6) -> None:
         self.model = model_name
         self.temp = temperature
         preload_models()
