@@ -16,18 +16,29 @@ def listen_response(input: str):
     if local:
         return requests.post(f'{base_url}/api/v1/listen', json={'input': input})
     else:
-        file = {'file': open(input, 'rb')}
+        with open(input, 'rb') as f:
+            file = {'file': f}
         return requests.post(f'{base_url}/api/v1/listen', json={'input': 'file'}, files=file)
 
 def speak_response(input: str):
-    return requests.post(f'{base_url}/api/v1/speak', json={'input': input})
+    if local:
+        return requests.post(f'{base_url}/api/v1/full', json={'input': input})
+    else:
+        request = requests.post(f'{base_url}/api/v1/speak', json={'input': input})
+        with open('speak_out_audio.wav', 'wb') as f:
+            f.write(request.content)
+        return request, os.path.abspath('speak_out_audio.wav')
 
 def full_response(input: str):
     if local:
         return requests.post(f'{base_url}/api/v1/full', json={'input': input})
     else:
-        file = {'file': open(input, 'rb')}
-        return requests.post(f'{base_url}/api/v1/full', json={'input': 'file'}, files=file)
+        with open(input, 'rb') as f:
+            file = {'file': f}
+        request = requests.post(f'{base_url}/api/v1/full', json={'input': 'file'}, files=file)
+        with open('out_audio.wav', 'wb') as f:
+            f.write(request.content)
+        return request.json(), os.path.abspath('out_audio.wav')
 
 def send_command(input: str):
     return requests.post(f'{base_url}/api/v1/command', json={'input': input})
@@ -37,7 +48,7 @@ def record_voice():
     FORMAT = pyaudio.paInt16
     CHANNELS = 1
     RATE = 44100
-    WAVE_OUTPUT_FILENAME = 'output.mp3'
+    WAVE_OUTPUT_FILENAME = 'output.wav'
 
     p = pyaudio.PyAudio()
 
@@ -50,7 +61,6 @@ def record_voice():
 
     frames = []
 
-    print('Ready, press V to speak.')
     while True:
         if keyboard.is_pressed('v'):
             while keyboard.is_pressed('v'):
@@ -75,10 +85,10 @@ def record_voice():
 def pipe():
     while True:
         input = record_voice()
-        response = full_response(input)
-        response = response.json()
+        response, audio = full_response(input)
         user = response[0]
         ame = response[1]
+
         print(f'USER: {user}')
         print(f'AME: {ame}')
 
@@ -87,6 +97,7 @@ if __name__ == '__main__':
     if inmth == 'voice':
         print('initiating voice input...')
         pipe()
+        print('Ready, press V to speak.')
     elif inmth == 'text':
         while True:
             intxt = input('USER: ')
@@ -98,17 +109,13 @@ if __name__ == '__main__':
         while True:
             intxt = input('CMD >> ')
             cmdargs = shlex.split(intxt)
-            # note: test to see if lines 102-103 are necessary
-            if cmdargs == []: 
-                pass
-            elif cmdargs[0] == 'exit':
+            if cmdargs[0] == 'exit':
                 exit(0)
             elif cmdargs[0] == 'eval':
                 try:
                     print(send_command(cmdargs[1]))
                 except requests.exceptions.ConnectionError:
-                    print(f'Cannot connect to server: {base_url}')
-                    
+                    print(f'Cannot connect to server: {base_url}')      
     else:
         print('Invalid input method.')
 
