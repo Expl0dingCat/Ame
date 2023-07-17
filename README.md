@@ -74,9 +74,9 @@ By choosing the name Ame, I aim to embody the qualities of adaptability, and rev
 Component                     | Status 
 ----------------------------- | -----
 Speech-to-text                |  🟢
-Text-to-speech                |  🟡
+Text-to-speech                |  🟢
 Voice identification          |  🔴
-Vision system                 |  🔴
+Vision system                 |  🟡
 Long-term memory              |  🟢
 Primary controller            |  🟢
 Module handler                |  🟡
