@@ -1,5 +1,17 @@
 # Ame (雨) Project
-Ame is a fully integrated, multi-modal, open-source virtual assistant built to enhance your digital experience. She leverages the power of a custom fine-tuned 13 billion parameter LLaMA model to provide personalized and intuitive interaction.
+Ame is a fully integrated, multi-modal, open-source virtual assistant built to enhance your digital experience. She leverages the power of a custom fine-tuned* 13 billion parameter LLaMA model to provide personalized and intuitive interaction.
+
+## Disclaimer ⚠️
+Ame is in an incomplete state and is being developed by me and only me, expect progress to be slow, refer to the **[progress](#progress-v1)** section of the readme for more information. 
+
+## Overview 📖
+- **[Key features 🚀](#key-features-)**
+- **[Usage 💻](#usage-%EF%B8%8F)**
+- **[Development progress 🚧](#progress-v1)**
+- **[About Ame 💧](#the-meaning-behind-ame-)**
+- **[Contributing 🤝](#contributing-)**
+- **[Acknowledgements 🙏](#acknowledgements-)**
+- **[License ⚖️](#license-%EF%B8%8F)**
 
 ## Key features 🚀
 **Customizable Modules**: Ame's modular design allows for easy customization and extensibility. Each module serves a specific function, such as managing calendars, providing weather updates, or assisting with personal tasks—Ame adapts to you. Developers can create their own modules or modify existing ones to tailor Ame's capabilities to their specific requirements.
@@ -14,7 +26,7 @@ Ame is a fully integrated, multi-modal, open-source virtual assistant built to e
 
 **Long-term Memory**: Ame utilizes a vector database that optimizes memory storage and retrieval, enabling Ame to access data that goes beyond the context limit of her model.
 
-## Usage ⚙️ 
+## Usage ⚙️
 
 ### Install requirements
 ```bash
@@ -59,11 +71,6 @@ response = controller.generate_response("Hello, World!")
 ```
 For a more advanced example, see `server.py`.
 
-## The meaning behind "Ame" 💧
-The name "Ame" originates from the Japanese word "雨" (pronounced ah-meh), which translates to "rain" in English. Like rain, Ame represents a refreshing and nourishing presence in your digital life. Just as raindrops bring life to the earth, Ame breathes life into your digital environment, providing support and efficiency.
-
-By choosing the name Ame, I aim to embody the qualities of adaptability, and revitalization, that rain symbolizes. I hope that Ame can be the reliable companion that brings a refreshing experience to your daily digital interactions.
-
 ## Progress (`v1`)
 🔴 Planned
 🟡 In progress
@@ -75,7 +82,6 @@ Component                     | Status
 ----------------------------- | -----
 Speech-to-text                |  🟢
 Text-to-speech                |  🟢
-Voice identification          |  🔴
 Vision system                 |  🟡
 Long-term memory              |  🟢
 Primary controller            |  🟢
@@ -84,27 +90,38 @@ Server/client interface       |  🟢
 Client UI                     |  🔴
 Telegram interface            |  🔴
 
-### Fine-tuning LLaMA
-Currently waiting for the second version of LLaMA.
-
-Step                          | Status 
------------------------------ | -----
-Planning                      |  🟢
-Dataset                       |  🟢
-Training method               |  🟡
-Hardware acquisition          |  🟡
-Training                      |  🔴
-
-### Out-of-the-box modules
+### Modules
 
 Module                        | Status 
 ----------------------------- | -----
-Weather                       |  🟡
+Module SDK                    |  🟡
+Weather                       |  🔴
 Google Calendar               |  🔴
 News                          |  🔴
 DeepL                         |  🔴
-Discord                       |  🔴
 Shell                         |  🔴
+
+### Fine-tuning LLaMA
+I am currently waiting for the second version of LLaMA to train Ame.
+
+Step                          | Status 
+----------------------------- | -----
+Planning                      |  🔴
+Dataset                       |  🔴
+Training method               |  🔴
+Hardware acquisition          |  🔴
+Training                      |  🔴
+
+## Plans for `v2` 🔵
+As `v1` is still in development, this section is subject to volatile change, it currently contains features I wanted to include in `v1` but don't have time as well as brand new _concepts_ that may or may not be implemented. If you would like to suggest features for `v2`, please feel free to contact me.
+- Voice identification
+- Web UI
+- Passive listening 
+
+## The meaning behind "Ame" 💧
+The name "Ame" originates from the Japanese word "雨" (pronounced ah-meh), which translates to "rain" in English. Like rain, Ame represents a refreshing and nourishing presence in your digital life. Just as raindrops bring life to the earth, Ame breathes life into your digital environment, providing support and efficiency.
+
+By choosing the name Ame, I aim to embody the qualities of adaptability, and revitalization, that rain symbolizes. I hope that Ame can be the reliable companion that brings a refreshing experience to your daily digital interactions.
 
 ## Contributing 🤝
 If you would like to contribute to the Ame project, please contact me.
@@ -113,8 +130,11 @@ If you would like to contribute to the Ame project, please contact me.
 Ame relies on 3rd party open source software to function, this project would not have been possible without:
 
 - [HyperDB](https://github.com/jdagdelen/hyperDB) - Long term memory vector DB
-- [Whisper](https://github.com/openai/whisper) - Speech to text
-- [LLaMA](https://github.com/facebookresearch/llama) and [Wizard-Vicuna Uncensored](https://huggingface.co/ehartford/Wizard-Vicuna-13B-Uncensored) - Base LLM
+- [Whisper](https://github.com/openai/whisper) and [Bark](https://github.com/suno-ai/bark) - Speech-to-text and text-to-speech
+- [LLaMA](https://github.com/facebookresearch/llama) - Base LLM
 
 ## License ⚖️
 Ame is released under the GNU General Public License v3, which allows you to use, modify, and distribute the software freely. Please refer to the [license file](https://github.com/Expl0dingCat/ame/blob/main/LICENSE) for more details.
+
+## Footnotes
+*likely via QLoRA, TBD, I am currently waiting on the second version of LLaMA.
