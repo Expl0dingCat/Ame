@@ -9,15 +9,15 @@ import logging
 
 class controller:
     """
-    The controller class is responsible for managing the AI's modules, memory, and language models.
+    The controller class is responsible for managing Ame's modules, memory, and language models.
 
     Args:
         verbose (bool, optional): If True, enables verbose output. Defaults to True.
         log (bool, optional): If True, enables logging to a file. Defaults to True.
         memory_path (str, optional): The path to the memory database file. If None, a new memory database will be created. Defaults to None.
         language_model_path (str, optional): The path to the language model file. If None, a default model will be used. Defaults to None.
-        speech_to_text_model (str, optional): The path to the speech-to-text model file. If None, a default model will be used. Defaults to None.
-        text_to_speech_model_path (str, optional): The path to the text-to-speech model file. If None, a default model will be used. Defaults to None.
+        speech_to_text_model (str, optional): The path to the speech-to-text model. If None, a default model will be used. Defaults to None.
+        text_to_speech_model_path (str, optional): The path to the text-to-speech model. If None, a default model will be used. Defaults to None.
         max_tokens (int, optional): The maximum number of tokens to generate per response. Defaults to 128.
         temperature (float, optional): The temperature to use when generating responses. Defaults to 0.85.
         context_limit (int, optional): The maximum number of tokens to use as context when generating responses. Defaults to 2048.
@@ -31,8 +31,9 @@ class controller:
         current (list): The current conversation history.
         memory_path (str): The path to the memory database file.
         language_model_path (str): The path to the language model file.
-        speech_to_text_model (str): The path to the speech-to-text model file.
-        text_to_speech_model_path (str): The path to the text-to-speech model file.
+        speech_to_text_model (str): The speech-to-text model name.
+        text_to_speech_model (str): The text-to-speech model name.
+        tts_temperature (float): The temperature to use when generating audio output.
         max_tokens (int): The maximum number of tokens to generate per response.
         temperature (float): The temperature to use when generating responses.
         context_limit (int): The maximum number of tokens to use as context when generating responses.
@@ -50,7 +51,7 @@ class controller:
         listen: Transcribes audio input to text.
         run_module: Runs a given module. 
     """
-    def __init__(self, verbose=True, log=True, memory_path=None, language_model_path=None, speech_to_text_model=None, text_to_speech_model_path=None, max_tokens=128, temperature=0.85, context_limit=2048, virtual_context_limit=1024, use_gpu=True, debug=False):
+    def __init__(self, verbose=True, log=True, memory_path=None, language_model_path=None, speech_to_text_model=None, text_to_speech_model=None, tts_temperature=0.6, max_tokens=128, temperature=0.85, context_limit=2048, virtual_context_limit=1024, use_gpu=True, debug=False):
         self.debug = debug
         if verbose:
             self.verbose = True
@@ -104,7 +105,11 @@ class controller:
         else:
             self.stt = stt(speech_to_text_model)
         self.vprint('Initializing text-to-speech engine...')
-        self.tts = tts(text_to_speech_model_path)
+        if text_to_speech_model == None:
+            self.vprint('No text-to-speech model specified, using default: en_speaker_9')
+            self.tts = tts('en_speaker_9')
+        else:    
+            self.tts = tts(text_to_speech_model)
         self.vprint('All initialized. Controller ready and on standby.')
 
     def __call__(self):
@@ -127,9 +132,9 @@ class controller:
         user_input = self.listen(listen_input)
         self.vprint(f'Speech input: {user_input}')
         output = self.generate_response(user_input)
-        self.speak(output)
-
-        return user_input, output
+        audio_output = self.speak(output)
+        self.vprint(f'Full system completed, returning response: {output}')
+        return user_input, output, audio_output
 
     def generate_response(self, user_input):
         self.vprint(f'Generating response: {user_input}')
