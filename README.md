@@ -129,6 +129,7 @@ If you would like to contribute to the Ame project, please contact me.
 ## Acknowledgements 🙏
 Ame relies on 3rd party open source software to function, this project would not have been possible without:
 
+- [llama-cpp-python](https://github.com/abetlen/llama-cpp-python) - LLaMA GGML inference
 - [HyperDB](https://github.com/jdagdelen/hyperDB) - Long term memory vector DB
 - [Whisper](https://github.com/openai/whisper) and [Bark](https://github.com/suno-ai/bark) - Speech-to-text and text-to-speech
 - [LLaMA](https://github.com/facebookresearch/llama) - Base LLM
