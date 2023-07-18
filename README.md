@@ -117,6 +117,7 @@ As `v1` is still in development, this section is subject to volatile change, it 
 - Voice identification
 - Web UI
 - Passive listening 
+- Vtuber integrations (weeb)
 
 ## The meaning behind "Ame" 💧
 The name "Ame" originates from the Japanese word "雨" (pronounced ah-meh), which translates to "rain" in English. Like rain, Ame represents a refreshing and nourishing presence in your digital life. Just as raindrops bring life to the earth, Ame breathes life into your digital environment, providing support and efficiency.
