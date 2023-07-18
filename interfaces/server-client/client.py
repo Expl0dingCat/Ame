@@ -6,8 +6,8 @@ import os
 import shlex
 
 # If the client and server are running locally, set this to True
-local = False
-base_url = 'https://4ecf-99-246-208-47.ngrok-free.app'
+local = True
+base_url = 'http://127.0.0.1:5440'
 
 def generate_response(input: str):
     return requests.post(f'{base_url}/api/v1/generate', json={'input': input})
