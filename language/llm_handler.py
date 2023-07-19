@@ -13,9 +13,3 @@ class ai:
         prompt_tokens = response['usage']['prompt_tokens']
         completion_tokens = response['usage']['completion_tokens']
         return text.strip(), prompt_tokens, completion_tokens
-    
-    def detect_intent(self):
-        """
-        Possible solution for detecting which module to use based on the user's input. 
-        """
-        pass
