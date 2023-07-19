@@ -26,6 +26,23 @@ Ame is in an incomplete state and is being developed by me and only me, expect p
 
 **Long-term Memory**: Ame utilizes a vector database that optimizes memory storage and retrieval, enabling Ame to access data that goes beyond the context limit of her model.
 
+### Full feature list
+`*` means the feature is yet to be implemented, see **[progress](#progress-v1)**, this list does not include features that may be coming in `v2`.
+- Support for any LLaMA GGML (via llama.cpp)
+- Developer-friendly module platform`*`
+- Long-term memory
+- Full customizability
+- Client UI`*`
+- High-quality text-to-speech (via bark)
+- Accurate speech-to-text (via whisper)
+- Smart context limit management
+- Pre-built server and client
+- Remote server command
+- Telegram integrations`*`
+- Vision system`*`
+- Fully open source
+- Easy-to-use API
+
 ## Usage ⚙️
 
 ### Install requirements
