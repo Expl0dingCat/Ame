@@ -10,11 +10,13 @@ controller = controller(verbose=True, # Print to stdout
                         speech_to_text_model='base.en', # Speech-to-text model
                         text_to_speech_model=None, # Text-to-speech model
                         tts_temperature=0.6, # Temperature for the TTS model (0.0-1.0)
+                        vision_model=None, # Vision model
                         max_tokens=128, # Max tokens to generate
                         temperature=0.85, # Temperature (0.0-1.0)
-                        use_gpu=True, # Use GPU
+                        personality_prompt=None, # Personality prompt
                         context_limit=2048, # Context limit of the model
                         virtual_context_limit=1024, # Point where short term memory drops earliest memory (long term memory persists)
+                        use_gpu=True, # Use GPU
                         debug=False # Debug mode (testing only)
                         )
 
@@ -68,6 +70,13 @@ async def handle_full(request):
         response = controller.full_pipeline(input)
         return web.json_response(response)
 
+async def handle_text(request):
+    response = await request.json()
+    input = response['input']
+    input, output, audio_output = controller.text_pipeline(input)
+    response = [input, output]
+    return web.json_response(response), web.FileResponse(path=audio_output)
+
 async def handle_command(request):
     response = await request.json()
     input = response['input']
@@ -78,6 +87,7 @@ async def handle_command(request):
 
 app = web.Application()
 app.add_routes([web.post('/api/v1/full', handle_full)])
+app.add_routes([web.post('/api/v1/text', handle_text)])
 app.add_routes([web.post('/api/v1/generate', handle_generate)])
 app.add_routes([web.post('/api/v1/listen', handle_listen)])
 app.add_routes([web.post('/api/v1/speak', handle_speak)])
