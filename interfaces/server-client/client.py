@@ -47,6 +47,9 @@ def full_response(input: str):
 def send_command(input: str):
     return requests.post(f'{base_url}/api/v1/command', json={'input': input})
 
+def text_input_response(input: str):
+    return requests.post(f'{base_url}/api/v1/text', json={'input': input})
+
 def record_voice():
     CHUNK = 1024
     FORMAT = pyaudio.paInt16
@@ -104,7 +107,7 @@ if __name__ == '__main__':
     elif inmth == 'text':
         while True:
             intxt = input('USER: ')
-            response = generate_response(intxt)
+            response = text_input_response(intxt)
             response = response.json()
             print(f'AME: {response}')
     elif inmth == 'cmd':
