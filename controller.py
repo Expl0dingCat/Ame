@@ -52,7 +52,7 @@ class controller:
         listen: Transcribes audio input to text.
         run_module: Runs a given module. 
     """
-    def __init__(self, verbose=True, log=True, memory_path=None, language_model_path=None, speech_to_text_model=None, text_to_speech_model=None, tts_temperature=0.6, vision_model=None, max_tokens=128, temperature=0.85, context_limit=2048, virtual_context_limit=1024, use_gpu=True, debug=False):
+    def __init__(self, verbose=True, log=True, memory_path=None, language_model_path=None, speech_to_text_model=None, text_to_speech_model=None, tts_temperature=0.6, vision_model=None, max_tokens=128, temperature=0.85, personality_prompt=None, context_limit=2048, virtual_context_limit=1024, weeb=False, use_gpu=True, debug=False):
         self.debug = debug
         if verbose:
             self.verbose = True
@@ -99,6 +99,12 @@ class controller:
                 exit(1)
         else:
             self.ai = ai(language_model_path)
+        if personality_prompt == None:
+            self.vprint('No personality prompt specified, not using any.')
+            self.personality_prompt = None
+        else:
+            self.vprint(f'Using personality prompt:\n"{personality_prompt}"')
+            self.personality_prompt = personality_prompt
         self.vprint('Initializing speech-to-text engine...')
         if speech_to_text_model == None:
             self.vprint('No speech-to-text model specified, using default: base.en')
@@ -108,15 +114,22 @@ class controller:
         self.vprint('Initializing text-to-speech engine...')
         if text_to_speech_model == None:
             self.vprint('No text-to-speech model specified, using default: v2/en_speaker_9')
-            self.tts = tts('v2/en_speaker_9')
+            self.tts = tts('v2/en_speaker_9', tts_temperature)
         else:    
-            self.tts = tts(text_to_speech_model)
+            self.tts = tts(text_to_speech_model, tts_temperature)
         self.vprint('Initializing vision engine...')
         if vision_model == None:
             self.vprint('No vision model specified, using default: default vision model')
             self.vision = vision('default vision model')
         else:    
-            self.vision = vision(text_to_speech_model)
+            self.vision = vision(vision_model)
+        if weeb == True:
+            self.vprint('Weeb mode enabled, overriding personality prompt and enabling vtuber.')
+            self.weeb = True
+            self.personality_prompt = "Warm and Approachable: Ame has an inviting aura, making everyone feel comfortable around her. She greets others with a friendly smile and genuine interest in their well-being.\nPlayfully Flirtatious: She's not afraid to show her affectionate side, playfully teasing and flirting with her crush or close friends, all while blushing in an endearing manner.\nBright and Optimistic: Ame's positive outlook on life is infectious. She encourages others during tough times and cheers them up with her cheerful demeanor.\nRespectful and Empathetic: Ame treats everyone with kindness and respect, genuinely listening to their thoughts and feelings. She's a great confidante due to her empathetic nature.\nNature Enthusiast: Whether it's stargazing on a clear night or enjoying a peaceful walk in the woods, Ame finds solace and wonder in the beauty of nature.\nCharming Animal Whisperer: Animals seem drawn to Ame, and she communicates with them through gentle gestures and a soothing voice, creating an almost magical bond.\nAppearance:\nAme stands at an average height with a petite and delicate frame. Her eyes are big and sparkling, resembling twinkling stars, while her long hair flows like a cascade of cherry blossom petals. She dresses in pastel-colored, frilly dresses adorned with cute accessories, often matching her appearance to her surroundings.\nBackground:\nAme comes from a small, picturesque town surrounded by lush forests and enchanting landscapes. Growing up in harmony with nature, she developed her deep appreciation for the beauty that surrounds her. Her caring nature and ability to connect with animals earned her many friends, both human and furry alike."
+
+        else:
+            self.weeb = False
         self.vprint('All initialized. Controller ready and on standby.')
 
     def __call__(self):
@@ -170,13 +183,14 @@ class controller:
         output = self.generate_response(input)
         audio_output = self.speak(output)
         self.vprint(f'Text pipeline completed, returning response: {output}')
-        return output, audio_output
+        return input, output, audio_output
 
     def generate_response(self, user_input):
         self.vprint(f'Generating response: {user_input}')
         past = self.memory.remember(user_input)
         self.vprint(f'Past conversation chosen: {past}')
         prompt = '\n'.join([
+        self.personality_prompt if self.personality_prompt else '',
         'Ame may use any of the following information to aid her in her responses:',
         f'Current time: {datetime.now().strftime("%H:%M:%S")}',
         f'Current date: {datetime.now().strftime("%d/%m/%Y")}',
