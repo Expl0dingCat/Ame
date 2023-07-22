@@ -2,7 +2,7 @@
 Ame is a fully integrated, multi-modal, open-source virtual assistant built to enhance your digital experience. She leverages the power of a custom fine-tuned* 13 billion parameter LLaMA model to provide personalized and intuitive interaction.
 
 ## Disclaimer ⚠️
-Ame is in an incomplete state and is being developed by me and only me, expect progress to be slow, refer to the **[progress](#progress-v1)** section of the readme for more information. 
+Ame is in an incomplete state and is being developed by me and only me, expect progress to be slow, refer to the **[progress](#progress-v1)** section of the readme for more information. The client and server are unable to communicate the audio files, this has not been implemented yet, audio generation is functional.
 
 ## Overview 📖
 - **[Key features 🚀](#key-features-)**
@@ -59,7 +59,9 @@ pip3 install keyboard
 pip3 install transformers
 pip3 install git+https://github.com/suno-ai/bark.git
 ```
+- You must have CUDA 11.8
 - You must use torch (and its associated packages) version 2.0.0+ or it will break
+- If you need to reinstall torch, purge it before doing so
 - Ame was designed on Python 3.10.11
 
 
