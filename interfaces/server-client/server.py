@@ -47,7 +47,7 @@ async def handle_speak(request):
     input = response['input']
     userinput, output, audio_output = controller.speak(input)
     response = [userinput, output]
-    return web.json_response(response), web.FileResponse(path=audio_output)
+    return web.json_response(response)#, web.FileResponse(path=audio_output)
 
 async def handle_full(request):
     if request.content_type == 'multipart/form-data':
@@ -61,7 +61,7 @@ async def handle_full(request):
                 f.write(chunk)
         userinput, output, audio_output = controller.full_pipeline(os.path.abspath(f.name))
         response = [userinput, output]
-        return web.json_response(response), web.FileResponse(path=audio_output)
+        return web.json_response(response)#, web.FileResponse(path=audio_output)
     else:
         response = await request.json()
         input = response['input']
