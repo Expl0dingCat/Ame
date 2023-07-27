@@ -4,6 +4,9 @@ Ame is a fully integrated, multi-modal, open-source virtual assistant built to e
 ## Disclaimer ⚠️
 Ame is in an incomplete state and is being developed by me and only me, expect progress to be slow, refer to the **[progress](#progress-v1)** section of the readme for more information. The client and server are unable to communicate the audio files, this has not been implemented yet, audio generation is functional.
 
+## Announcements 📢
+- **[2023-07-26]** LLaMA 2 has been announced, I am currently taking a break, expect this project to continue very shortly (~1 month).
+
 ## Overview 📖
 - **[Key features 🚀](#key-features-)**
 - **[Usage 💻](#usage-%EF%B8%8F)**
