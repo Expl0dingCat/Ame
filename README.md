@@ -80,7 +80,7 @@ python client.py
 ```
 
 ### API
-Create a Python file in the root folder:
+Example usage:
 
 ```py
 from controller import controller
