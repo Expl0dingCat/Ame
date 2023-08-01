@@ -80,7 +80,7 @@ python client.py
 ```
 
 ### API
-Example usage:
+Ame's API allows for programmatic use of Ame's entire system. Here is an example:
 
 ```py
 from controller import controller
