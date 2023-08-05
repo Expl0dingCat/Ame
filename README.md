@@ -138,7 +138,8 @@ Training                      |  🔴
 As `v1` is still in development, this section is subject to volatile change, it currently contains features I wanted to include in `v1` but don't have time as well as brand new _concepts_ that may or may not be implemented. If you would like to suggest features for `v2`, please feel free to contact me.
 - Voice identification
 - Web UI
-- Passive listening 
+- Passive listening
+- Edge TPU support
 - Vtuber integrations (weeb)
 
 ## The meaning behind "Ame" 💧
