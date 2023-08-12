@@ -1,6 +1,7 @@
 {
     "verbose": true,
     "log": true,
+    "assistant_name": "Ame",
     "memory": {
         "enabled": true,
         "path": null
@@ -15,11 +16,11 @@
         "personality_prompt": null
     },
     "vision": {
-        "enabled": true,
+        "enabled": false,
         "model": null
     },
     "tts": {
-        "enabled": true,
+        "enabled": false,
         "model": null,
         "temperature": 0.6
     },
@@ -28,7 +29,7 @@
         "model": null
     },
     "modules": {
-        "enabled": true,
+        "enabled": false,
         "path": null
     },
     "weeb": false,
