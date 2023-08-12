@@ -13,3 +13,6 @@ class ai:
         prompt_tokens = response['usage']['prompt_tokens']
         completion_tokens = response['usage']['completion_tokens']
         return text.strip(), prompt_tokens, completion_tokens
+    
+    def get_token_amt(self, text):
+        return len(self.llm.tokenize(text))
