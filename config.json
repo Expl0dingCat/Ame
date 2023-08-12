@@ -1,0 +1,38 @@
+{
+    "verbose": true,
+    "log": true,
+    "memory": {
+        "enabled": true,
+        "path": null
+    },
+    "language": {
+        "enabled": true,
+        "model_path": null,
+        "max_tokens": 128,
+        "temperature": 0.85,
+        "context_limit": 2048,
+        "virtual_context_limit": 1024, 
+        "personality_prompt": null
+    },
+    "vision": {
+        "enabled": true,
+        "model": null
+    },
+    "tts": {
+        "enabled": true,
+        "model": null,
+        "temperature": 0.6
+    },
+    "stt": {
+        "enabled": true,
+        "model": null
+    },
+    "modules": {
+        "enabled": true,
+        "path": null
+    },
+    "weeb": false,
+    "use_gpu": true,
+    "debug": false
+}
+  

@@ -1,0 +1,45 @@
+
+
+This is temporary, ill be writing proper docs soon(tm)
+
+controller.py
+
+Args:
+    verbose (bool, optional): If True, enables verbose output. Defaults to True.
+    log (bool, optional): If True, enables logging to a file. Defaults to True.
+    memory_path (str, optional): The path to the memory database file. If None, a new memory database will be created. Defaults to None.
+    language_model_path (str, optional): The path to the language model file. If None, a default model will be used. Defaults to None.
+    speech_to_text_model (str, optional): The path to the speech-to-text model. If None, a default model will be used. Defaults to None.
+    text_to_speech_model_path (str, optional): The path to the text-to-speech model. If None, a default model will be used. Defaults to None.
+    max_tokens (int, optional): The maximum number of tokens to generate per response. Defaults to 128.
+    temperature (float, optional): The temperature to use when generating responses. Defaults to 0.85.
+    context_limit (int, optional): The maximum number of tokens to use as context when generating responses. Defaults to 2048.
+    virtual_context_limit (int, optional): The maximum number of tokens to use as virtual context when generating responses. Defaults to 1024.
+    use_gpu (bool, optional): If True, uses the GPU for model inference. Defaults to True.
+    debug (bool, optional): If True, enables debug mode. Defaults to False.
+
+Attributes:
+    memory (memory): The memory database.
+    modules (modules): The system's modules (extensions).
+    current (list): The current conversation history.
+    memory_path (str): The path to the memory database file.
+    language_model_path (str): The path to the language model file.
+    speech_to_text_model (str): The speech-to-text model name.
+    text_to_speech_model (str): The text-to-speech model name.
+    tts_temperature (float): The temperature to use when generating audio output.
+    max_tokens (int): The maximum number of tokens to generate per response.
+    temperature (float): The temperature to use when generating responses.
+    context_limit (int): The maximum number of tokens to use as context when generating responses.
+    virtual_context_limit (int): The maximum number of tokens to use as virtual context when generating responses.
+    use_gpu (bool): If True, uses the GPU for model inference.
+    debug (bool): If True, enables debug mode.
+
+Methods:
+    __init__: Initializes the `controller` class.
+    vprint: Prints a message if verbose output is enabled.
+    evaluate: Evaluates a given input.
+    generate_response: Generates a response to a given input.
+    memorize: Adds a given input to the memory database.
+    speak: Generates audio output from a given input.
+    listen: Transcribes audio input to text.
+    run_module: Runs a given module. 
