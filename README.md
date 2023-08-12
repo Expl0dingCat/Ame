@@ -140,6 +140,7 @@ As `v1` is still in development, this section is subject to volatile change, it 
 - Web UI
 - Multi-memory banks
 - Passive listening
+- Extreme redundancy
 - Edge TPU support
 - Vtuber integrations (weeb)
 
