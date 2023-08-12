@@ -267,15 +267,15 @@ class controller:
         f'{self.assistant_name}:'
         ])
 
-        print(self.ai.get_token_amt(prompt))
+        token_amt = self.ai.get_token_amt(prompt)
 
         if self.language_enabled:
             if self.ai.get_token_amt(prompt) > self.virtual_context_limit:
                 if self.current:
-                    self.vprint(f'Prompt usage exceeded virtual context limit of {self.virtual_context_limit} ({prompt_usage}). Earliest message ("{str(self.current[0])}") in conversation dropped from short-term memory.')
+                    self.vprint(f'Prompt usage exceeded virtual context limit of {self.virtual_context_limit} ({token_amt}). Earliest message ("{str(self.current[0])}") in conversation dropped from short-term memory.')
                     self.current.pop(0)
                 else:
-                    self.vprint(f'Prompt usage exceeded virtual context limit of {self.virtual_context_limit} ({prompt_usage}). No messages in conversation to drop from short-term memory, dropping past conversation memory from prompt.')
+                    self.vprint(f'Prompt usage exceeded virtual context limit of {self.virtual_context_limit} ({token_amt}). No messages in conversation to drop from short-term memory, dropping past conversation memory from prompt.')
                     past = "None"
 
             self.vprint(f'Starting response generation...')
