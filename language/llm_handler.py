@@ -15,4 +15,4 @@ class ai:
         return text.strip(), prompt_tokens, completion_tokens
     
     def get_token_amt(self, text):
-        return len(self.llm.tokenize(text))
+        return len(self.llm.tokenize(text.encode('utf-8')))
