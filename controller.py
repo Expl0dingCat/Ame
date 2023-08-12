@@ -1,135 +1,164 @@
-from language.llm_handler import ai
-from memory_handler import memory
-from voice.stt_handler import stt
-from voice.tts_handler import tts
-from vision.vision_handler import vision
-from module_handler import modules
-from datetime import datetime
 import os
 import logging
+import json
+from datetime import datetime
 
 class controller:
-    """
-    The controller class is responsible for managing Ame's modules, memory, and language models.
-
-    Args:
-        verbose (bool, optional): If True, enables verbose output. Defaults to True.
-        log (bool, optional): If True, enables logging to a file. Defaults to True.
-        memory_path (str, optional): The path to the memory database file. If None, a new memory database will be created. Defaults to None.
-        language_model_path (str, optional): The path to the language model file. If None, a default model will be used. Defaults to None.
-        speech_to_text_model (str, optional): The path to the speech-to-text model. If None, a default model will be used. Defaults to None.
-        text_to_speech_model_path (str, optional): The path to the text-to-speech model. If None, a default model will be used. Defaults to None.
-        max_tokens (int, optional): The maximum number of tokens to generate per response. Defaults to 128.
-        temperature (float, optional): The temperature to use when generating responses. Defaults to 0.85.
-        context_limit (int, optional): The maximum number of tokens to use as context when generating responses. Defaults to 2048.
-        virtual_context_limit (int, optional): The maximum number of tokens to use as virtual context when generating responses. Defaults to 1024.
-        use_gpu (bool, optional): If True, uses the GPU for model inference. Defaults to True.
-        debug (bool, optional): If True, enables debug mode. Defaults to False.
-
-    Attributes:
-        memory (memory): The memory database.
-        modules (modules): The system's modules (extensions).
-        current (list): The current conversation history.
-        memory_path (str): The path to the memory database file.
-        language_model_path (str): The path to the language model file.
-        speech_to_text_model (str): The speech-to-text model name.
-        text_to_speech_model (str): The text-to-speech model name.
-        tts_temperature (float): The temperature to use when generating audio output.
-        max_tokens (int): The maximum number of tokens to generate per response.
-        temperature (float): The temperature to use when generating responses.
-        context_limit (int): The maximum number of tokens to use as context when generating responses.
-        virtual_context_limit (int): The maximum number of tokens to use as virtual context when generating responses.
-        use_gpu (bool): If True, uses the GPU for model inference.
-        debug (bool): If True, enables debug mode.
-
-    Methods:
-        __init__: Initializes the `controller` class.
-        vprint: Prints a message if verbose output is enabled.
-        evaluate: Evaluates a given input.
-        generate_response: Generates a response to a given input.
-        memorize: Adds a given input to the memory database.
-        speak: Generates audio output from a given input.
-        listen: Transcribes audio input to text.
-        run_module: Runs a given module. 
-    """
-    def __init__(self, verbose=True, log=True, memory_path=None, language_model_path=None, speech_to_text_model=None, text_to_speech_model=None, tts_temperature=0.6, vision_model=None, max_tokens=128, temperature=0.85, personality_prompt=None, context_limit=2048, virtual_context_limit=1024, weeb=False, use_gpu=True, debug=False):
-        self.debug = debug
-        if verbose:
-            self.verbose = True
-        if log:
+    def __init__(self, config_src='config.json', verbose=True, log=True, memory_path=None, language_model_path=None, speech_to_text_model=None, text_to_speech_model=None, tts_temperature=0.6, vision_model=None, max_tokens=128, temperature=0.85, personality_prompt=None, context_limit=2048, virtual_context_limit=1024, weeb=False, use_gpu=True, debug=False):
+        # Initialize variables
+        with open('config.json') as config_file:
+            config = json.load(config_file)
+        if config_src == 'config.json':
+            self.verbose = config['verbose']
+            self.log = config['log']
+            self.memory_enabled = config['memory']['enabled']
+            if self.memory_enabled:
+                self.memory_path = config['memory']['path']
+            self.language_enabled = config['language']['enabled']
+            if self.language_enabled:
+                self.language_model_path = config['language']['model_path']
+                self.max_tokens = config['language']['max_tokens']
+                self.temperature = config['language']['temperature']
+                self.context_limit = config['language']['context_limit']
+                self.virtual_context_limit = config['language']['temperature']
+                self.personality_prompt = config['language']['personality_prompt']
+            self.vision_enabled = config['vision']['enabled']
+            if self.vision_enabled:
+                self.vision_model = config['vision']['model']
+            self.tts_enabled = config['tts']['enabled']
+            if self.tts_enabled:
+                self.text_to_speech_model = config['tts']['model']
+                self.tts_temperature = config['tts']['temperature']
+            self.stt_enabled = config['stt']['enabled']
+            if self.stt_enabled:
+                self.speech_to_text_model = config['stt']['model']
+            self.modules_enabled = config['modules']['enabled']
+            if self.modules_enabled:
+                self.modules = config['modules']['path']
+            self.weeb = config['weeb']
+            self.use_gpu = config['use_gpu']
+            self.debug = config['debug']
+        elif config_src == 'var':
+            self.memory_enabled = config['memory']['enabled']
+            self.language_enabled = config['language']['enabled']
+            self.vision_enabled = config['vision']['enabled']
+            self.tts_enabled = config['tts']['enabled']
+            self.stt_enabled = config['stt']['enabled']
+            self.modules_enabled = config['modules']['enabled']
+            self.verbose = verbose
+            self.log = log
+            self.memory_path = memory_path
+            self.max_tokens = max_tokens
+            self.temperature = temperature
+            self.context_limit = context_limit
+            self.virtual_context_limit = virtual_context_limit
+            self.language_model_path = language_model_path
+            self.personality_prompt = personality_prompt
+            self.vision_model = vision_model
+            self.text_to_speech_model = text_to_speech_model
+            self.tts_temperature = tts_temperature
+            self.speech_to_text_model = speech_to_text_model
+            self.weeb = weeb
+            self.use_gpu = use_gpu
+            self.debug = debug
+        else:
+            raise Exception(f'Invalid config source: {config_src}')
+            
+        if self.log:
             logging.basicConfig(filename='controller.log', level=logging.INFO)
             self.log = True
         else:
             self.vprint('LOGGING IS DISABLED, THIS IS NOT RECOMMENDED.')
         if self.debug:
             self.vprint('DEBUG MODE ENABLED, USE ONLY FOR TESTING.')
+        self.vprint(f'Loading configuration from {config_src}')
         self.vprint('Initializing controller...')
         self.current = []
-        self.max_tokens = max_tokens
-        self.temperature = temperature
-        self.virtual_context_limit = virtual_context_limit
         file_path = os.path.abspath(__name__)
         parent_dir = os.path.dirname(file_path)
-        self.vprint('Initializing memory...')
-        self.memory = memory()
-        if memory_path == None:
-            if os.path.exists(f'{parent_dir}/memories/ame.pickle.gz'):
-                self.vprint(f'No memory db path specified, found existing memory db, loading: {parent_dir}/memories/ame.pickle.gz')
-                self.memory.load_memory(f'{parent_dir}/memories/ame.pickle.gz')
+
+        if self.memory_enabled:
+            self.vprint('Initializing memory...')
+            from memory_handler import memory
+            self.memory = memory()
+            if self.memory_path == None:
+                if os.path.exists(f'{parent_dir}/memories/ame.pickle.gz'):
+                    self.vprint(f'No memory db path specified, found existing memory db, loading: {parent_dir}/memories/ame.pickle.gz')
+                    self.memory.load_memory(f'{parent_dir}/memories/ame.pickle.gz')
+                else:
+                    self.vprint(f'No memory db path specified, could not find any existing memory db, creating new one: {parent_dir}/memories/ame.pickle.gz', logging.WARNING)
+                    self.memory.memorize(['USER: Hey, Ame!'])
+                    self.memory.save_memory(f'{parent_dir}/memories/ame.pickle.gz')
+                self.memory_path = f'{parent_dir}/memories/ame.pickle.gz'
             else:
-                self.vprint(f'No memory db path specified, could not find any existing memory db, creating new one: {parent_dir}/memories/ame.pickle.gz', logging.WARNING)
-                self.memory.memorize(['USER: Hey, Ame!'])
-                self.memory.save_memory(f'{parent_dir}/memories/ame.pickle.gz')
-            self.memory_path = f'{parent_dir}/memories/ame.pickle.gz'
+                self.memory.load_memory(self.memory_path)
         else:
-            self.memory.load_memory(memory_path)
-            self.memory_path = memory_path
-        if debug == False:
-            self.vprint('Initializing modules...')
-            self.modules = modules()
+            self.vprint('Memory disabled. Renable memory in the config file.')
+        
+        if self.debug == False:
+            if self.modules_enabled:
+                from module_handler import modules
+                self.vprint('Initializing modules...')
+                self.modules = modules()
+            else:
+                self.vprint('Modules disabled. Renable modules in the config file.')
         else:
             self.vprint('Debug mode is enabled, modules disabled.')
-        self.vprint('Initializing language model...')
-        if language_model_path == None:
-            if os.path.exists(f'{parent_dir}/language/model/ame.bin'):
-                self.vprint(f'No language model path specified, using default, loading: {parent_dir}/language/model/ame.bin')
-                self.ai = ai(f'{parent_dir}/language/model/ame.bin', use_gpu=use_gpu, context=context_limit)
+        
+        if self.language_enabled:
+            from language.llm_handler import ai
+            self.vprint('Initializing language model...')
+            if self.language_model_path == None:
+                if os.path.exists(f'{parent_dir}/language/model/ame.bin'):
+                    self.vprint(f'No language model path specified, using default, loading: {parent_dir}/language/model/ame.bin')
+                    self.ai = ai(f'{parent_dir}/language/model/ame.bin', use_gpu=self.use_gpu, context=self.context_limit)
+                else:
+                    self.vprint(f'No language model path specified, could not find any existing language model, please verify installation integrity, place a model file named ame.bin in {parent_dir}/language/model/ or specify the model path in the arguments when initalizing the controller.', logging.ERROR)
+                    raise Exception(f'No language model path specified, could not find any existing language model, please verify installation integrity, place a model file named ame.bin in {parent_dir}/language/model/ or specify the model path in the arguments when initalizing the controller.')
             else:
-                self.vprint(f'No language model path specified, could not find any existing language model, please verify installation integrity, place a model file named ame.bin in {parent_dir}/language/model/ or specify the model path in the arguments when initalizing the controller.', logging.ERROR)
-                exit(1)
+                self.ai = ai(self.language_model_path)
+            if self.personality_prompt == None:
+                self.vprint('No personality prompt specified, not using any.')
+            else:
+                self.vprint(f'Using personality prompt:\n"{self.personality_prompt}"')
         else:
-            self.ai = ai(language_model_path)
-        if personality_prompt == None:
-            self.vprint('No personality prompt specified, not using any.')
-            self.personality_prompt = None
+            self.vprint('CORE COMPONENT DISABLED. Language model disabled. Ame will not function.', logging.WARNING)
+
+        if self.stt_enabled:
+            self.vprint('Initializing speech-to-text engine...')
+            from voice.stt_handler import stt
+            if self.speech_to_text_model == None:
+                self.vprint('No speech-to-text model specified, using default: base.en')
+                self.stt = stt('base.en')
+            else:
+                self.stt = stt(self.speech_to_text_model)
         else:
-            self.vprint(f'Using personality prompt:\n"{personality_prompt}"')
-            self.personality_prompt = personality_prompt
-        self.vprint('Initializing speech-to-text engine...')
-        if speech_to_text_model == None:
-            self.vprint('No speech-to-text model specified, using default: base.en')
-            self.stt = stt('base.en')
+            self.vprint('Speech-to-text disabled. Renable speech-to-text in the config file.')
+
+        if self.tts_enabled:
+            from voice.tts_handler import tts
+            self.vprint('Initializing text-to-speech engine...')
+            if self.text_to_speech_model == None:
+                self.vprint('No text-to-speech model specified, using default: v2/en_speaker_9')
+                self.tts = tts('v2/en_speaker_9', self.tts_temperature)
+            else:    
+                self.tts = tts(self.text_to_speech_model, self.tts_temperature)
         else:
-            self.stt = stt(speech_to_text_model)
-        self.vprint('Initializing text-to-speech engine...')
-        if text_to_speech_model == None:
-            self.vprint('No text-to-speech model specified, using default: v2/en_speaker_9')
-            self.tts = tts('v2/en_speaker_9', tts_temperature)
-        else:    
-            self.tts = tts(text_to_speech_model, tts_temperature)
-        self.vprint('Initializing vision engine...')
-        if vision_model == None:
-            self.vprint('No vision model specified, using default: default vision model')
-            self.vision = vision('default vision model')
-        else:    
-            self.vision = vision(vision_model)
-        if weeb == True:
+            self.vprint('Text-to-speech disabled. Renable text-to-speech in the config file.')
+        
+        if self.vision_enabled:
+            from vision.vision_handler import vision
+            self.vprint('Initializing vision engine...')
+            if self.vision_model == None:
+                self.vprint('No vision model specified, using default: default vision model')
+                self.vision = vision('default vision model')
+            else:    
+                self.vision = vision(self.vision_model)
+
+        if self.weeb:
             self.vprint('Weeb mode enabled, overriding personality prompt and enabling vtuber.')
-            self.weeb = True
             self.personality_prompt = "Warm and Approachable: Ame has an inviting aura, making everyone feel comfortable around her. She greets others with a friendly smile and genuine interest in their well-being.\nPlayfully Flirtatious: She's not afraid to show her affectionate side, playfully teasing and flirting with her crush or close friends, all while blushing in an endearing manner.\nBright and Optimistic: Ame's positive outlook on life is infectious. She encourages others during tough times and cheers them up with her cheerful demeanor.\nRespectful and Empathetic: Ame treats everyone with kindness and respect, genuinely listening to their thoughts and feelings. She's a great confidante due to her empathetic nature.\nNature Enthusiast: Whether it's stargazing on a clear night or enjoying a peaceful walk in the woods, Ame finds solace and wonder in the beauty of nature.\nCharming Animal Whisperer: Animals seem drawn to Ame, and she communicates with them through gentle gestures and a soothing voice, creating an almost magical bond.\nAppearance:\nAme stands at an average height with a petite and delicate frame. Her eyes are big and sparkling, resembling twinkling stars, while her long hair flows like a cascade of cherry blossom petals. She dresses in pastel-colored, frilly dresses adorned with cute accessories, often matching her appearance to her surroundings.\nBackground:\nAme comes from a small, picturesque town surrounded by lush forests and enchanting landscapes. Growing up in harmony with nature, she developed her deep appreciation for the beauty that surrounds her. Her caring nature and ability to connect with animals earned her many friends, both human and furry alike."
 
-        else:
-            self.weeb = False
         self.vprint('All initialized. Controller ready and on standby.')
 
     def __call__(self):
@@ -204,6 +233,10 @@ class controller:
         'AME:'
         ])
 
+        if self.ai.get_token_amt(prompt) > self.virtual_context_limit:
+            self.vprint(f'Prompt usage exceeded virtual context limit of {self.virtual_context_limit} ({prompt_usage}). Earliest message ("{str(self.current[0])}") in conversation dropped from short-term memory.')
+            self.current.pop(0)
+
         self.vprint(f'Starting response generation...')
         text, prompt_usage, response_usage = self.ai.generate(prompt, max_tokens=self.max_tokens, temperature=self.temperature)
 
@@ -213,9 +246,15 @@ class controller:
             self.current.pop(0)
             self.vprint(f'Prompt usage exceeded virtual context limit of {self.virtual_context_limit} ({prompt_usage}). Earliest message ("{str(self.current[0])}") in conversation dropped from short-term memory.')
 
-        self.memory.memorize([f'USER: {user_input}', f'AME: {text}'])
-        self.current.append(f'USER: {user_input}')
-        self.current.append(f'AME: {text}')
+        if text == None:
+            self.vprint('No response generated.', logging.WARNING)
+        elif text == '[end]':
+            self.current = []
+            self.vprint('Conversation ended. Short-term memory cleared.')
+        else:
+            self.memory.memorize([f'USER: {user_input}', f'AME: {text}'])
+            self.current.append(f'USER: {user_input}')
+            self.current.append(f'AME: {text}')
 
         self.memory.save_memory(self.memory_path)
 
