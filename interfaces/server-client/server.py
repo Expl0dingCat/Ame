@@ -3,22 +3,26 @@ from aiohttp import web
 from controller import controller
 
 # Initialize controller, None will use defualt values
-controller = controller(verbose=True, # Print to stdout
-                        log=True, # Log to controller.log
-                        memory_path=None, # Path to memory db (pickle.gz)
-                        language_model_path=None, # Path to language model (GGML)
-                        speech_to_text_model='base.en', # Speech-to-text model
-                        text_to_speech_model=None, # Text-to-speech model
-                        tts_temperature=0.6, # Temperature for the TTS model (0.0-1.0)
-                        vision_model=None, # Vision model
-                        max_tokens=128, # Max tokens to generate
-                        temperature=0.85, # Temperature (0.0-1.0)
-                        personality_prompt=None, # Personality prompt
-                        context_limit=2048, # Context limit of the model
-                        virtual_context_limit=1024, # Point where short term memory drops earliest memory (long term memory persists)
-                        use_gpu=True, # Use GPU
-                        debug=False # Debug mode (testing only)
-                        )
+# controller = controller(verbose=True, # Print to stdout
+#                         log=True, # Log to controller.log
+#                         memory_path=None, # Path to memory db (pickle.gz)
+#                         language_model_path=None, # Path to language model (GGML)
+#                         speech_to_text_model='base.en', # Speech-to-text model
+#                         text_to_speech_model=None, # Text-to-speech model
+#                         tts_temperature=0.6, # Temperature for the TTS model (0.0-1.0)
+#                         vision_model=None, # Vision model
+#                         max_tokens=128, # Max tokens to generate
+#                         temperature=0.85, # Temperature (0.0-1.0)
+#                         personality_prompt=None, # Personality prompt
+#                         context_limit=2048, # Context limit of the model
+#                         virtual_context_limit=1024, # Point where short term memory drops earliest memory (long term memory persists)
+#                         use_gpu=True, # Use GPU
+#                         debug=False # Debug mode (testing only)
+#                         )
+
+# Migrated to config.json
+
+controller = controller()
 
 async def handle_generate(request):
     response = await request.json()
