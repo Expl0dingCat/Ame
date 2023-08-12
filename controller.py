@@ -27,7 +27,7 @@ class controller:
             self.max_tokens = config['language']['max_tokens']
             self.temperature = config['language']['temperature']
             self.context_limit = config['language']['context_limit']
-            self.virtual_context_limit = config['language']['temperature']
+            self.virtual_context_limit = config['language']['virtual_context_limit']
             self.personality_prompt = config['language']['personality_prompt']
         self.vision_enabled = config['vision']['enabled']
         if self.vision_enabled:
@@ -191,11 +191,12 @@ class controller:
             return output
         else:
             self.vprint(f'Evaluation disabled, ignoring request: {input}')
-            return "Evaluation disabled. Enable debug mode to use evaluation."
+            return 'Evaluation disabled. Enable debug mode to use evaluation.'
 
     def user_cmds(self, input):
         if input == 'clear_conversation':
             self.current = []
+            self.vprint('User cleared conversation history.')
             return True
         if input == 'shutdown':
             self.vprint('User sent shutdown command.', logging.WARNING)
@@ -208,7 +209,7 @@ class controller:
         if self.stt_enabled:
             user_input = self.listen(listen_input)
         if self.user_cmds(user_input):
-            return f"User command detected: {user_input}"
+            return user_input, f'User command detected: {user_input}', ''
         self.vprint(f'Speech input: {user_input}')
         if img:
             if self.vision_enabled:
@@ -222,14 +223,14 @@ class controller:
         if self.tts_enabled:
             audio_output = self.speak(output)
         else:
-            audio_output = None
+            audio_output = ''
         self.vprint(f'Full system completed, returning response: {output}')
         return user_input, output, audio_output
     
     def text_pipeline(self, input, img=None):
         self.vprint(f'Text pipeline initiated, processing input: {input}')
         if self.user_cmds(input):
-            return f"User command detected: {input}"
+            return input, f'User command detected: {input}', ''
         if img:
             if self.vision_enabled:
                 self.vprint(f'Processing image input...')
@@ -241,6 +242,8 @@ class controller:
         output = self.generate_response(input)
         if self.tts_enabled:
             audio_output = self.speak(output)
+        else:
+            audio_output = ''
         self.vprint(f'Text pipeline completed, returning response: {output}')
         return input, output, audio_output
 
@@ -250,7 +253,7 @@ class controller:
             past = self.memory.remember(user_input)
             self.vprint(f'Past conversation chosen: {past}')
         else:
-            past = "None"
+            past = 'None'
             self.vprint(f'Memory disabled, skipping past conversation selection...')
         prompt = '\n'.join([
         self.personality_prompt if self.personality_prompt else '',
@@ -259,24 +262,25 @@ class controller:
         f'Current date: {datetime.now().strftime("%d/%m/%Y")}',
         'Past conversation:',
         *past,
-        f'Utilities available to {self.assistant_name}, she can use these at any time by placing them at the end of her response:',
-        '[end] - Ends the conversation',
+        # f'Utilities available to {self.assistant_name}, she can use these at any time by placing them at the end of her response:',
+        # '[end] - Ends the conversation',
         '### Assistant',
         *self.current,
         f'USER: {user_input}',
-        f'{self.assistant_name}:'
+        f'{self.assistant_name}: '
         ])
 
-        token_amt = self.ai.get_token_amt(prompt)
-
         if self.language_enabled:
+
+            token_amt = self.ai.get_token_amt(prompt)
+
             if self.ai.get_token_amt(prompt) > self.virtual_context_limit:
                 if self.current:
                     self.vprint(f'Prompt usage exceeded virtual context limit of {self.virtual_context_limit} ({token_amt}). Earliest message ("{str(self.current[0])}") in conversation dropped from short-term memory.')
                     self.current.pop(0)
                 else:
                     self.vprint(f'Prompt usage exceeded virtual context limit of {self.virtual_context_limit} ({token_amt}). No messages in conversation to drop from short-term memory, dropping past conversation memory from prompt.')
-                    past = "None"
+                    past = 'None'
 
             self.vprint(f'Starting response generation...')
             text, prompt_usage, response_usage = self.ai.generate(prompt, max_tokens=self.max_tokens, temperature=self.temperature)
@@ -284,9 +288,9 @@ class controller:
             self.vprint(f'Response generated: {text}, prompt usage: {prompt_usage}, response usage: {response_usage}')
 
             if text == None:
-                self.vprint('No response generated.', logging.WARNING)
+                self.vprint('No response generated.', logging.INFO)
             elif text == '':
-                self.vprint('Empty response generated.', logging.WARNING)
+                self.vprint('Empty response generated.', logging.INFO)
             elif text == '[end]':
                 self.current = []
                 self.vprint('Conversation ended. Short-term memory cleared.')
@@ -306,12 +310,13 @@ class controller:
     
         else:
             self.vprint(f'Languge model disabled, enable language in config.json to use.', logging.WARNING)
+            return 'Language model is disabled.'
 
     def speak(self, input):
         if self.tts_enabled:
             if input == None:
                 self.vprint('No input text given.', logging.ERROR)
-                return "No input text given."
+                return 'No input text given.'
             self.vprint('Generating audio output...')
             output = self.tts.generate(input)
             self.vprint('Audio output generated.')
@@ -319,12 +324,13 @@ class controller:
             return output
         else:
             self.vprint('TTS disabled, enable tts in config.json to use.', logging.WARNING)
+            return 'TTS is disabled.'
     
     def listen(self, input):
         if self.stt_enabled:
             if input == None:
                 self.vprint('No input audio file specified.', logging.ERROR)
-                return "No input audio file specified."
+                return 'No input audio file specified.'
             self.vprint('Listening to audio input...')
             output = self.stt.transcribe(input)
             self.vprint(f'Transcription received: {output}')
@@ -332,12 +338,13 @@ class controller:
             return output
         else:
             self.vprint('STT disabled, enable stt in config.json to use.', logging.WARNING)
+            return 'STT is disabled.'
 
     def see(self, input):
         if self.vision_enabled:
             if input == None:
                 self.vprint('No input image specified.', logging.ERROR)
-                return "No input image specified."
+                return 'No input image specified.'
             self.vprint('Analyzing image...')
             output = self.vision.describe(input)
             self.vprint(f'Image analysis complete: {output}')
@@ -345,6 +352,7 @@ class controller:
             return output
         else:
             self.vprint('Vision disabled, enable vision in config.json to use.', logging.WARNING)
+            return 'Vision is disabled.'
 
     def run_module(self, module, *args, **kwargs):
         if self.modules_enabled:
@@ -355,6 +363,7 @@ class controller:
             return output
         else:
             self.vprint('Modules disabled, enable modules in config.json to use.', logging.WARNING)
+            return 'Modules are disabled.'
 
 if __name__ == '__main__':
     print('The controller is not meant to be run directly, use one of the interfaces to interact with Ame.')
