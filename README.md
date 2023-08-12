@@ -142,6 +142,7 @@ As `v1` is still in development, this section is subject to volatile change, it 
 - Passive listening
 - Extreme redundancy
 - Edge TPU support
+- RVC (singing and possibly TTS)
 - Vtuber integrations (weeb)
 
 ## The meaning behind "Ame" 💧
