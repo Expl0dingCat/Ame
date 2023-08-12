@@ -93,6 +93,7 @@ def pipe():
     while True:
         input = record_voice()
         response, audio = full_response(input)
+
         user = response[0]
         ame = response[1]
 
@@ -109,7 +110,7 @@ if __name__ == '__main__':
             intxt = input('USER: ')
             response = text_input_response(intxt)
             response = response.json()
-            print(f'AME: {response}')
+            print(f'AME: {response[1]}')
     elif inmth == 'cmd':
         print('DANGER ZONE: This is for running commands on the server. Use with caution.\n\nSupported commands:\neval <input>: evaluates python code the server\n')
         while True:
