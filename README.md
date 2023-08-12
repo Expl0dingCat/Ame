@@ -138,6 +138,7 @@ Training                      |  🔴
 As `v1` is still in development, this section is subject to volatile change, it currently contains features I wanted to include in `v1` but don't have time as well as brand new _concepts_ that may or may not be implemented. If you would like to suggest features for `v2`, please feel free to contact me.
 - Voice identification
 - Web UI
+- Multi-memory banks
 - Passive listening
 - Edge TPU support
 - Vtuber integrations (weeb)
@@ -162,4 +163,4 @@ Ame relies on 3rd party open source software to function, this project would not
 Ame is released under the GNU General Public License v3, which allows you to use, modify, and distribute the software freely. Please refer to the [license file](https://github.com/Expl0dingCat/ame/blob/main/LICENSE) for more details.
 
 ## Footnotes
-*likely via QLoRA, TBD, I am currently waiting on the second version of LLaMA.
+*likely via QLoRA, TBD.
