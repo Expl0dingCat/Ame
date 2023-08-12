@@ -79,7 +79,7 @@ async def handle_text(request):
     input = response['input']
     input, output, audio_output = controller.text_pipeline(input)
     response = [input, output]
-    return web.json_response(response), web.FileResponse(path=audio_output)
+    return web.json_response(response)#, web.FileResponse(path=audio_output)
 
 async def handle_command(request):
     response = await request.json()
