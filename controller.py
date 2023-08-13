@@ -2,6 +2,7 @@ import os
 import logging
 import json
 import glob
+import re
 from datetime import datetime
 
 class controller:
@@ -83,6 +84,11 @@ class controller:
         self.current = []
         file_path = os.path.abspath(__name__)
         parent_dir = os.path.dirname(file_path)
+
+        if re.match(r'^([^:]+\..+)|(\/.*)|([A-Za-z]:\\.*)$', self.personality_prompt):
+            self.vprint('Personality prompt is a file path, loading...')
+            with open(self.personality_prompt, 'r') as f:
+                self.personality_prompt = f.read()
 
         if self.memory_enabled:
             self.vprint('Initializing memory...')
