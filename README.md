@@ -151,4 +151,4 @@ Ame relies on 3rd party open source software to function, this project would not
 - [LLaMA](https://github.com/facebookresearch/llama) - Base LLM
 
 ## License ⚖️
-Ame is released under the GNU General Public License v3, which allows you to use, modify, and distribute the software freely. Please refer to the [license file](https://github.com/Expl0dingCat/ame/blob/main/LICENSE) for more details.
+Ame is released under the MIT License, which allows you to use, modify, and distribute the software freely. Please refer to the [license file](https://github.com/Expl0dingCat/ame/blob/main/LICENSE) for more details.
