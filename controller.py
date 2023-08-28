@@ -6,8 +6,6 @@ import re
 from datetime import datetime
 
 class controller:
-    # Moving to a config file instead of a class variable
-    # config_src='config.json', verbose=True, log=True, memory_path=None, language_model_path=None, speech_to_text_model=None, text_to_speech_model=None, tts_temperature=0.6, vision_model=None, max_tokens=128, temperature=0.85, personality_prompt=None, context_limit=2048, virtual_context_limit=1024, weeb=False, use_gpu=True, debug=False
     def __init__(self):
         # Initialize variables
         try:
@@ -15,7 +13,7 @@ class controller:
                 config = json.load(config_file)
         except Exception as e:
             raise Exception(f'Unable to load config file, ensure you have a config.json in the relative root directory: {e}')
-        #if config_src == 'config.json':
+        
         self.verbose = config['verbose']
         self.log = config['log']
         self.assistant_name = config['assistant_name']
@@ -46,32 +44,7 @@ class controller:
         self.weeb = config['weeb']
         self.use_gpu = config['use_gpu']
         self.debug = config['debug']
-        # elif config_src == 'var':
-        #     self.memory_enabled = config['memory']['enabled']
-        #     self.language_enabled = config['language']['enabled']
-        #     self.vision_enabled = config['vision']['enabled']
-        #     self.tts_enabled = config['tts']['enabled']
-        #     self.stt_enabled = config['stt']['enabled']
-        #     self.modules_enabled = config['modules']['enabled']
-        #     self.verbose = verbose
-        #     self.log = log
-        #     self.memory_path = memory_path
-        #     self.max_tokens = max_tokens
-        #     self.temperature = temperature
-        #     self.context_limit = context_limit
-        #     self.virtual_context_limit = virtual_context_limit
-        #     self.language_model_path = language_model_path
-        #     self.personality_prompt = personality_prompt
-        #     self.vision_model = vision_model
-        #     self.text_to_speech_model = text_to_speech_model
-        #     self.tts_temperature = tts_temperature
-        #     self.speech_to_text_model = speech_to_text_model
-        #     self.weeb = weeb
-        #     self.use_gpu = use_gpu
-        #     self.debug = debug
-        # else:
-        #     raise Exception(f'Invalid config source: {config_src}')
-            
+        
         if self.log:
             logging.basicConfig(filename='controller.log', level=logging.INFO)
             self.log = True
