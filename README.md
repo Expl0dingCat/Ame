@@ -5,8 +5,7 @@ Ame is a feature-rich, multi-modal, open-source virtual assistant framework (**[
 Ame is in an incomplete state and is being developed by me and only me, expect progress to be slow, refer to the **[progress](#progress-v1)** section of the readme for more information. The client and server are unable to communicate the audio files, this has not been implemented yet, audio generation is functional.
 
 ## Announcements 📢
-- **[2023-08-27]** Returning soon....
-- **[2023-07-26]** LLaMA 2 has been announced, I am currently taking a break, expect this project to continue very shortly (~1 month).
+- **[2023-08-28]** Back at it! Join the **[discord](https://discord.gg/S6h8XYsuZt)** for frequent dev updates, discussion, community involvement and more.
 
 ## Overview 📖
 - **[Key features 🚀](#key-features-)**
@@ -105,7 +104,6 @@ Component                     | Status
 ----------------------------- | -----
 Speech-to-text                |  🟢
 Text-to-speech                |  🟢
-Vision system                 |  🟡
 Long-term memory              |  🟢
 Primary controller            |  🟢
 Module handler                |  🟡
@@ -119,6 +117,7 @@ Module                        | Status
 ----------------------------- | -----
 Module SDK                    |  🟡
 Weathers                      |  🔴
+Home Assistant                |  🔴
 Google Calendar               |  🔴
 News                          |  🔴
 DeepL                         |  🔴
@@ -132,6 +131,7 @@ As `v1` is still in development, this section is subject to volatile change, it 
 - Multi-memory banks
 - Passive listening
 - Extreme redundancy
+- Vision system
 - Edge TPU support
 - RVC (singing and possibly TTS)
 - Vtuber integrations (weeb)
