@@ -16,21 +16,22 @@
         "personality_prompt": null
     },
     "vision": {
-        "enabled": false,
-        "model": null
+        "enabled": true,
+        "model_path": null
     },
     "tts": {
-        "enabled": false,
-        "model": null,
+        "enabled": true,
+        "model_path": null,
         "temperature": 0.6
     },
     "stt": {
         "enabled": true,
-        "model": null
+        "model_path": null
     },
     "modules": {
         "enabled": false,
-        "path": null
+        "model_path": null,
+        "vectorizer_path": null
     },
     "weeb": false,
     "use_gpu": true,

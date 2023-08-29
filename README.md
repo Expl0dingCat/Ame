@@ -42,7 +42,7 @@ Ame is in an incomplete state and is being developed by me and only me, expect p
 - Pre-built server and client
 - Remote server command
 - Telegram integrations`*`
-- Vision system`*`
+- Discord integrations`*`
 - Fully open-source
 - Easy-to-use API
 
@@ -118,7 +118,6 @@ Module                        | Status
 ----------------------------- | -----
 Module SDK                    |  🟡
 Weathers                      |  🔴
-Home Assistant                |  🔴
 Google Calendar               |  🔴
 News                          |  🔴
 DeepL                         |  🔴
@@ -136,6 +135,7 @@ As `v1` is still in development, this section is subject to volatile change, it 
 - Edge TPU support
 - RVC (singing and possibly TTS)
 - Vtuber integrations (weeb)
+- Home Assistant (this is already detectable out of the box by the module system but its a large task to integrate)
 
 ## The meaning behind "Ame" 💧
 The name "Ame" originates from the Japanese word "雨" (pronounced ah-meh), which translates to "rain" in English. Like rain, Ame represents a refreshing and nourishing presence in your digital life. Just as raindrops bring life to the earth, Ame breathes life into your digital environment, providing support and efficiency.

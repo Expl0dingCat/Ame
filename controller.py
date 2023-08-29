@@ -30,17 +30,19 @@ class controller:
             self.personality_prompt = config['language']['personality_prompt']
         self.vision_enabled = config['vision']['enabled']
         if self.vision_enabled:
-            self.vision_model = config['vision']['model']
+            self.vision_model = config['vision']['model_path']
         self.tts_enabled = config['tts']['enabled']
         if self.tts_enabled:
-            self.text_to_speech_model = config['tts']['model']
+            self.text_to_speech_model = config['tts']['model_path']
             self.tts_temperature = config['tts']['temperature']
         self.stt_enabled = config['stt']['enabled']
         if self.stt_enabled:
-            self.speech_to_text_model = config['stt']['model']
+            self.speech_to_text_model = config['stt']['model_path']
         self.modules_enabled = config['modules']['enabled']
         if self.modules_enabled:
             self.modules = config['modules']['path']
+            self.modules_vectorizer = config['modules']['vectorizer_path']
+            self.modules_model = config['modules']['model_path']
         self.weeb = config['weeb']
         self.use_gpu = config['use_gpu']
         self.debug = config['debug']
@@ -57,12 +59,6 @@ class controller:
         self.current = []
         file_path = os.path.abspath(__name__)
         parent_dir = os.path.dirname(file_path)
-
-        if self.personality_prompt:
-            if re.match(r'^([^:]+\..+)|(\/.*)|([A-Za-z]:\\.*)$', self.personality_prompt):
-                self.vprint('Personality prompt is a file path, loading...')
-                with open(self.personality_prompt, 'r') as f:
-                    self.personality_prompt = f.read()
 
         if self.memory_enabled:
             self.vprint('Initializing memory...')
@@ -86,14 +82,26 @@ class controller:
             if self.modules_enabled:
                 from module_handler import modules
                 self.vprint('Initializing modules...')
-                self.modules = modules()
+                if self.modules_vectorizer == None:
+                    self.vprint('No module vectorizer specified, using default: module_engine/pickles/tfidf_vectorizer.pkl')
+                    self.modules_vectorizer = 'module_engine/pickles/tfidf_vectorizer.pkl'
+                if self.modules_model == None:
+                    self.vprint('No module model specified, using default: module_engine/pickles/naive_bayes_model.pkl')
+                    self.modules_model = 'module_engine/pickles/naive_bayes_model.pkl'
+                self.modules = modules(self.modules_model, self.modules_vectorizer)
             else:
-                self.vprint('Modules disabled. Enable modules in the config file.')
+                self.vprint('Modules are disabled. Enable modules in the config file.')
         else:
-            self.vprint('Debug mode is enabled, modules disabled, eval mode enabled.')
+            self.vprint('Debug mode is enabled, modules are disabled, eval mode enabled.')
             self.eval_mode = True
         
         if self.language_enabled:
+            if self.personality_prompt:
+                if re.match(r'^([^:]+\..+)|(\/.*)|([A-Za-z]:\\.*)$', self.personality_prompt):
+                    self.vprint('Personality prompt is a file path, loading...')
+                    with open(self.personality_prompt, 'r') as f:
+                        self.personality_prompt = f.read()
+
             from language.llm_handler import ai
             self.vprint('Initializing language model...')
             model_directory = os.path.join(parent_dir, 'language', 'model')
@@ -242,8 +250,6 @@ class controller:
         f'Current date: {datetime.now().strftime("%d/%m/%Y")}',
         'Past conversation:',
         *past,
-        # f'Utilities available to {self.assistant_name}, she can use these at any time by placing them at the end of her response:',
-        # '[end] - Ends the conversation',
         '### Assistant',
         *self.current,
         f'USER: {user_input}',
