@@ -1,30 +1,34 @@
 import importlib
 import joblib
+import json
 import os
 
 # Untested and unfinished
 
 class modules:
-    def __init__(self, model_path, validation_path) -> None:
+    def __init__(self, model_path, vectorizer_path, modulesjson_path) -> None:
         self.module_map = {}
-        self.load_models(model_path, validation_path)
+        self.module_list = json.load(open(modulesjson_path, "r"))
+        self.load_models(model_path, vectorizer_path)
         for module_name in os.listdir("modules"):
             if os.path.isdir(os.path.join("modules", module_name)):
-                module_path = f"modules.{module_name}.main"
+                print(module_name)
+                module_path = f"modules.{module_name}"
                 try:
                     module = importlib.import_module(module_path)
                     self.module_map[module_name] = module
                 except ModuleNotFoundError:
                     pass
+                print(self.module_map)
 
-    def load_models(self, model_path, validation_path):
+    def load_models(self, model_path, vectorizer_path):
         model_filename = model_path
         self.loaded_model = joblib.load(model_filename)
 
-        vectorizer_filename = validation_path
+        vectorizer_filename = vectorizer_path
         self.vectorizer = joblib.load(vectorizer_filename)
 
-    def predict_module(self, query):
+    def predict_module_single(self, query):
         query_vector = self.vectorizer.transform([query])
         predictions = self.loaded_model.predict(query_vector)
         return predictions[0]

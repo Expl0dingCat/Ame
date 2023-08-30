@@ -248,7 +248,7 @@ class controller:
         f'{self.assistant_name} may use any of the following information to aid her in her responses:',
         f'Current time: {datetime.now().strftime("%H:%M:%S")}',
         f'Current date: {datetime.now().strftime("%d/%m/%Y")}',
-        'Past conversation:',
+        f'{self.assistant_name} remembers this past conversation that may be relevant to the current conversation:',
         *past,
         '### Assistant',
         *self.current,

@@ -1,0 +1,8 @@
+[
+    {
+        "id": 0,
+        "name": "Weather",
+        "args": false,
+        "function": "weather"
+    }
+]

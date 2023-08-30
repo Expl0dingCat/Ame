@@ -111,6 +111,7 @@ Server/client interface       |  🟢
 Client UI                     |  🔴
 Discord interface             |  🔴
 Telegram interface            |  🔴
+Documentation                 |  🟡
 
 ### Modules
 
