@@ -1,0 +1,143 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>modules</title>
+  <link rel="stylesheet" href="https://stackedit.io/style.css" />
+</head>
+
+<body class="stackedit">
+  <div class="stackedit__left">
+    <div class="stackedit__toc">
+      
+<ul>
+<li><a href="#ame-module-system-documentation">Ame Module System Documentation</a>
+<ul>
+<li><a href="#table-of-contents">Table of Contents</a></li>
+<li><a href="#terminology">1. Terminology</a></li>
+<li><a href="#module-handler">2. Module Handler</a></li>
+<li><a href="#using-modules-via-the-api">3. Using Modules via the API</a></li>
+<li><a href="#creating-custom-modules">4. Creating Custom Modules</a></li>
+<li><a href="#training-the-classifier">5. Training the Classifier</a></li>
+<li><a href="#conclusion">6. Conclusion</a></li>
+</ul>
+</li>
+</ul>
+
+    </div>
+  </div>
+  <div class="stackedit__right">
+    <div class="stackedit__html">
+      <h1 id="ame-module-system-documentation">Ame Module System Documentation</h1>
+<p>Welcome to the Ame Module System documentation. This guide covers everything related to modules, including the module handler (<code>module_handler.py</code>), the module API in the controller, and creating custom modules.</p>
+<h2 id="table-of-contents">Table of Contents</h2>
+<ol>
+<li><a href="#terminology">Terminology</a></li>
+<li><a href="#module-handler">Module Handler</a></li>
+<li><a href="#using-modules-via-the-api">Using Modules via the API</a></li>
+<li><a href="#creating-custom-modules">Creating Custom Modules</a></li>
+<li><a href="#training-the-classifier">Training the Classifier</a></li>
+<li><a href="#conclusion">Conclusion</a></li>
+</ol>
+<h2 id="terminology">1. Terminology</h2>
+<p>To ensure clarity throughout this documentation, let’s define some key terms:</p>
+<ul>
+<li><strong>Query</strong>: The user’s request (e.g., “What’s the weather like?”).</li>
+<li><strong>Single Pass Modules</strong>: Modules that do not require any arguments and are detected solely by the built-in module engine.</li>
+<li><strong>Double Pass Modules</strong>: Modules that have arguments requiring a second pass through a Language Model (LLM) to extract variables from the query.</li>
+<li><strong>Module Handler</strong>: The Python script <code>module_handler.py</code> responsible for managing modules.</li>
+</ul>
+<h2 id="module-handler">2. Module Handler</h2>
+<h3 id="initialization">2.1 Initialization</h3>
+<p><strong>__init__()</strong>: <code>model_path</code>: (string), <code>vectorizer_path</code>: (string), <code>modulesjson_path</code>: (string)<br>
+Initializes the module handler.</p>
+<ul>
+<li><code>model_path</code>: (string) Path to the module classification model.</li>
+<li><code>vectorizer_path</code>: (string) Path to the vectorizer file.</li>
+<li><code>modulesjson_path</code>: (string) Path to the <code>modules.json</code> configuration file.</li>
+</ul>
+<h3 id="loading-models">2.2 Loading Models</h3>
+<p><strong>load_models()</strong>: <code>model_path</code>: (string), <code>vectorizer_path</code>: (string)<br>
+Loads the required models for module classification.</p>
+<ul>
+<li><code>model_path</code>: (string) Path to the module classification model.</li>
+<li><code>vectorizer_path</code>: (string) Path to the vectorizer file.</li>
+</ul>
+<h3 id="module-prediction">2.3 Module Prediction</h3>
+<p><strong>predict_module()</strong>: <code>query</code>: (string)<br>
+Predicts a module using the built-in classification model.</p>
+<ul>
+<li><code>query</code>: (string) The user’s query to predict a module.</li>
+</ul>
+<h3 id="module-loading">2.4 Module Loading</h3>
+<p><strong>load_modules()</strong><br>
+Loads the modules that are marked as <code>detectable</code>.</p>
+<h3 id="module-usage">2.5 Module Usage</h3>
+<p><strong>use_module()</strong>: <code>module_name</code>: (string), <code>*args</code>, <code>**kwargs</code><br>
+Uses a module and obtains a response from its associated function.</p>
+<ul>
+<li><code>module_name</code>: (string) Name of the module to use.</li>
+<li><code>*args</code>: Variable-length positional arguments.</li>
+<li><code>**kwargs</code>: Variable-length keyword arguments.</li>
+</ul>
+<h2 id="using-modules-via-the-api">3. Using Modules via the API</h2>
+<p>To run a module using the API, follow these steps:</p>
+<pre class=" language-python"><code class="prism  language-python"><span class="token keyword">from</span> controller <span class="token keyword">import</span> Controller
+
+<span class="token comment"># Initialize the controller</span>
+controller <span class="token operator">=</span> Controller<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+<span class="token comment"># Run a module</span>
+response <span class="token operator">=</span> controller<span class="token punctuation">.</span>run_module<span class="token punctuation">(</span>module<span class="token punctuation">,</span> args<span class="token punctuation">)</span>
+</code></pre>
+<h2 id="creating-custom-modules">4. Creating Custom Modules</h2>
+<p>To create custom modules, modify the <code>modules.json</code> file with the following keys:</p>
+<ul>
+<li><code>id</code>: (integer)<br>
+An arbitrary module identifier.</li>
+<li><code>name</code>: (string)<br>
+Name of the module (must match module file name).</li>
+<li><code>args</code>: (union[None, dict])<br>
+If <code>None</code>, the module is detected using <code>predict_module()</code> and handled as a single-pass module. If <code>dict</code>, the module is detected, and its arguments are passed to an LLM to parse the query (double-pass module).</li>
+<li><code>function</code>: (string)<br>
+The function called when the module is executed.</li>
+<li><code>detectable</code>: (boolean)<br>
+If <code>True</code>, the module is detectable via the built-in classifier.</li>
+</ul>
+<p>Place your module file (<code>.py</code>) in the <code>modules</code> folder.</p>
+<h2 id="training-the-classifier">5. Training the Classifier</h2>
+<p>The classifier is used for both single-pass and double-pass modules. To train your module to be detected by the built-in classifier:</p>
+<ul>
+<li>
+<p>Modify the training data (<code>module_engine/training_data.csv</code>) and validation data (<code>module_engine/validation_data.csv</code>) by adding pairs of queries and labels in CSV format.</p>
+</li>
+<li>
+<p>Example:</p>
+<pre><code>query,label
+Tell me the latest finance news,News
+What's the current dew point?,Weather
+</code></pre>
+</li>
+<li>
+<p>Use a Language Model (LLM) to generate these pairs, such as ChatGPT, or handwrite them.</p>
+</li>
+<li>
+<p>Ensure that the training data and validation data are unique.</p>
+</li>
+<li>
+<p>Start the training by running:</p>
+<pre><code>python module_engine/training/train.py
+</code></pre>
+</li>
+</ul>
+<h2 id="conclusion">6. Conclusion</h2>
+<p>Thank you for exploring the Ame Module System documentation. This system empowers you to create and manage custom modules seamlessly. If you have any questions or need further assistance, please don’t hesitate to reach out.</p>
+<p>For additional resources, including more documentation and support forums, visit <a href="https://discord.gg/S6h8XYsuZt">the discord server</a>.</p>
+
+    </div>
+  </div>
+</body>
+
+</html>
