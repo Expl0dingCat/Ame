@@ -28,7 +28,7 @@ class modules:
         vectorizer_filename = vectorizer_path
         self.vectorizer = joblib.load(vectorizer_filename)
 
-    def predict_module_single(self, query):
+    def predict_module(self, query):
         query_vector = self.vectorizer.transform([query])
         predictions = self.loaded_model.predict(query_vector)
         return predictions[0]
