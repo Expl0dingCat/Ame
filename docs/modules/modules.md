@@ -13,14 +13,19 @@ This is the documentation for everything regarding modules. Including the module
 The module handler (`module_handler.py`) handles module importing and management. It contains a class, `modules` with 5 methods:
 
 - **\__init()__**: `model_path`: _string_, `vectorizer_path`: _string_, `modulesjson_path`: _string_
+
   Initializes the class.
+
   - `model_path`: _string_
+
   The path for the model file used for module classification.
   
   - `vectorizer_path`: _string_
+
   The path for the vectorizer file.
   
   - `modulesjson_path`: _string_
+  
   The path for the `modules.json` file.
 
 - **load_models()**: `model_path`: _string_, `vectorizer_path`: _string_
