@@ -14,7 +14,7 @@ The module handler (`module_handler.py`) handles module importing and management
 
 - **\__init()__**: `model_path`: _string_, `vectorizer_path`: _string_, `modulesjson_path`: _string_
 
-Initializes the class.
+  Initializes the class.
   - `model_path`: _string_
 
   The path for the model file used for module classification.
@@ -29,7 +29,7 @@ Initializes the class.
 
 - **load_models()**: `model_path`: _string_, `vectorizer_path`: _string_
 
-Loads required models for `predict_module()`.
+  Loads required models for `predict_module()`.
   - `model_path`: _string_
 
   The path for the model file used for module classification.
@@ -40,7 +40,7 @@ Loads required models for `predict_module()`.
 
 - **predict_module()**: `query`: _string_
 
-Predict a module using the built in classification model.
+  Predict a module using the built in classification model.
   - `query`: _string_
 
   The query to predict a module.
