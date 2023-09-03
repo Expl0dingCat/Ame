@@ -89,6 +89,7 @@ class controller:
                     self.vprint('No module model specified, using default: module_engine/pickles/naive_bayes_model.pkl')
                     self.modules_model = 'module_engine/pickles/naive_bayes_model.pkl'
                 self.modules = modules(self.modules_model, self.modules_vectorizer)
+                self.module_output = None
             else:
                 self.vprint('Modules are disabled. Enable modules in the config file.')
         else:
@@ -207,6 +208,12 @@ class controller:
                 self.vprint(f'Vision disabled, skipping image processing...')
                 desc = None
             output = self.generate_response(f'{user_input} [user sent an image: {desc}]')
+        if self.modules_enabled:
+            detected = self.detect_module(user_input)
+            if detected == None:
+                pass
+            else:
+                self.module_output = self.run_module(detected)
         output = self.generate_response(user_input)
         if self.tts_enabled:
             audio_output = self.speak(output)
@@ -227,6 +234,12 @@ class controller:
                 self.vprint(f'Vision disabled, skipping image processing...')
                 desc = None
             output = self.generate_response(f'{input} [user sent an image: {desc}]')
+        if self.modules_enabled:
+            detected = self.detect_module(input)
+            if detected == None:
+                pass
+            else:
+                self.module_output = self.run_module(detected)
         output = self.generate_response(input)
         if self.tts_enabled:
             audio_output = self.speak(output)
@@ -339,6 +352,20 @@ class controller:
         else:
             self.vprint('Vision disabled, enable vision in config.json to use.', logging.WARNING)
             return 'Vision is disabled.'
+
+    def detect_module(self, input):
+        if self.modules_enabled:
+            self.vprint(f'Module detection initiated, processing input: {input}')
+            output, probability = self.modules.predict_module(input)
+            if output == None:
+                self.vprint(f'No module detected, probability: {probability}')
+            else:
+                self.vprint(f'Module detected: {output}, probability: {probability}')
+
+            return output
+        else:
+            self.vprint('Modules disabled, enable modules in config.json to use.', logging.WARNING)
+            return 'Modules are disabled.'
 
     def run_module(self, module, *args, **kwargs):
         if self.modules_enabled:

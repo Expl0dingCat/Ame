@@ -106,7 +106,7 @@ Speech-to-text                |  🟢
 Text-to-speech                |  🟢
 Long-term memory              |  🟢
 Primary controller            |  🟢
-Module handler                |  🟡
+Module handler                |  🟢
 Server/client interface       |  🟢
 Client UI                     |  🔴
 Discord interface             |  🔴
@@ -117,8 +117,7 @@ Documentation                 |  🟡
 
 Module                        | Status 
 ----------------------------- | -----
-Module SDK                    |  🟡
-Weathers                      |  🔴
+Weather                       |  🟡
 Google Calendar               |  🔴
 News                          |  🔴
 DeepL                         |  🔴

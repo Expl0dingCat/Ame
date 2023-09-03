@@ -21,7 +21,10 @@ class modules:
     def predict_module(self, query):
         query_vector = self.vectorizer.transform([query])
         predictions = self.loaded_model.predict(query_vector)
-        return predictions[0]
+        predicted_probabilities = self.loaded_model.predict_proba(query_vector)
+        if max(predicted_probabilities[0]) < 0.7:
+            return None, max(predicted_probabilities[0])
+        return predictions[0], max(predicted_probabilities[0])
 
     def load_modules(self):
         for module_info in self.module_json:
