@@ -8,7 +8,7 @@ Ame is a feature-rich, multi-modal, open-source virtual assistant framework (**[
 Ame is in an incomplete state and is being developed by me and only me, expect progress to be slow, refer to the **[progress](#progress-v1)** section of the readme for more information. The client and server are unable to communicate the audio files, this has not been implemented yet, audio generation is functional.
 
 ## Announcements 📢
-- **[2023-09-02]** Back at it! Join the **[discord](https://discord.gg/S6h8XYsuZt)** for frequent dev updates, discussion, community involvement and more.
+- **[2023-09-02]** My school restarts 09-05, development may slow a bit.
 - **[2023-08-28]** Back at it! Join the **[discord](https://discord.gg/S6h8XYsuZt)** for frequent dev updates, discussion, community involvement and more.
 
 ## Overview 📖
