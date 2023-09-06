@@ -1,6 +1,6 @@
 ![Banner](https://repository-images.githubusercontent.com/663230405/f0fb87bc-7596-4fac-81d2-19139cb10aaa)
 
-## Setting a new standard for local virtual assistants
+## Setting a new standard for local virtual assistants 💧
 
 Meet Ame, the most powerful virtual assistant framework, powered by cutting-edge technology. Ame is a feature-rich, multi-modal, open-source virtual assistant framework (**[API](#api)**) designed to run entirely locally. It leverages the power of LLaMA to provide personalized and intuitive interaction. Ame's server is designed to run on enterprise-grade or high-end consumer-grade hardware (3090, 24gb VRAM+), you can run Ame on lower-end consumer hardware by using a more aggressive quantization, smaller model and/or by disabling TTS, STT and/or vision. Split computing is planned for v2 which will allow for splitting the compute workload across multiple devices. See **[announcements](#announcements-)** for updates and more information. 
 
