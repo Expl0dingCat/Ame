@@ -8,7 +8,7 @@ Meet Ame, the most powerful virtual assistant framework, powered by cutting-edge
 Ame is in an incomplete state and is being developed by me and only me, expect progress to be slow, refer to the **[progress](#progress-v1)** section of the readme for more information. The client and server are unable to communicate the audio files, this has not been implemented yet, audio generation is functional.
 
 ## Announcements 📢
-- **[2023-09-02]** Nothing to announce
+- **[2023-09-13]** Currently on break because of school, I'll be back soon(tm)
 - **[2023-08-28]** Join the **[discord](https://discord.gg/S6h8XYsuZt)** for frequent dev updates, discussion, community involvement and more.
 
 ## Overview 📖
