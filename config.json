@@ -13,7 +13,8 @@
         "temperature": 0.85,
         "context_limit": 2048,
         "virtual_context_limit": 1024, 
-        "personality_prompt": null
+        "personality_prompt": null,
+        "model_file_ext": ".gguf"
     },
     "vision": {
         "enabled": true,
