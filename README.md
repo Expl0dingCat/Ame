@@ -4,12 +4,13 @@
 
 Meet Ame, the most powerful virtual assistant framework, powered by cutting-edge technology. Ame is a feature-rich, multi-modal, open-source virtual assistant framework (**[API](#api)**) designed to run entirely locally. It leverages the power of LLaMA to provide personalized and intuitive interaction. Ame's server is designed to run on enterprise-grade or high-end consumer-grade hardware (3090, 24gb VRAM+), you can run Ame on lower-end consumer hardware by using a more aggressive quantization, smaller model and/or by disabling TTS, STT and/or vision. Split computing is planned for v2 which will allow for splitting the compute workload across multiple devices. See **[announcements](#announcements-)** for updates and more information. 
 
+Join the **[discord](https://discord.gg/S6h8XYsuZt)** for frequent dev updates, discussion, community involvement and more.
+
 ## Disclaimer ⚠️
 Ame is in an incomplete state and is being developed by me and only me, expect progress to be slow, refer to the **[progress](#progress-v1)** section of the readme for more information. The client and server are unable to communicate the audio files, this has not been implemented yet, audio generation is functional.
 
 ## Announcements 📢
-- **[2023-09-13]** Currently on break because of school, I'll be back soon(tm)
-- **[2023-08-28]** Join the **[discord](https://discord.gg/S6h8XYsuZt)** for frequent dev updates, discussion, community involvement and more.
+- **[2023-11-01]** Long time no see! Burnout sucks! I've resumed working on Ame, but at a slower pace, currently finishing up features, then will spend a month or two polishing, then hopefully a beta version can be released, no promises on a release date or feature release timeline, though.
 
 ## Overview 📖
 - **[Key features 🚀](#key-features-)**
