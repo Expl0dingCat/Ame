@@ -27,6 +27,7 @@ class controller:
             self.context_limit = config['language']['context_limit']
             self.virtual_context_limit = config['language']['virtual_context_limit']
             self.personality_prompt = config['language']['personality_prompt']
+            self.model_file_ext = config['language']['model_file_ext']
         self.vision_enabled = config['vision']['enabled']
         if self.vision_enabled:
             self.vision_model = config['vision']['model_path']
@@ -109,7 +110,7 @@ class controller:
             self.vprint('Initializing language model...')
             model_directory = os.path.join(parent_dir, 'language', 'model')
 
-            model_files = glob.glob(os.path.join(model_directory, '*.bin'))
+            model_files = glob.glob(os.path.join(model_directory, f'*{self.model_file_ext}'))
 
             if self.language_model_path == None:
                 if model_files:
@@ -117,7 +118,7 @@ class controller:
                     self.vprint(f'No language model path specified, using first in model dir, loading: {model_file_path}')
                     self.ai = ai(model_file_path, use_gpu=self.use_gpu, context=self.context_limit)
                 else:
-                    raise Exception(f'No language model path specified, could not find any existing language model, please verify installation integrity, place a model file (GGML, .bin) in {model_directory} or specify the model path in config.json.')
+                    raise Exception(f'No language model path specified, could not find any existing language model, place a model file (looking for {self.model_file_ext} file, this can be changed in config.json) in {model_directory} or specify the model path in config.json.')
             else:
                 self.ai = ai(self.language_model_path)
 
