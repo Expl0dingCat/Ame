@@ -82,8 +82,8 @@ class controller:
                 from module_handler import modules
                 self.vprint('Initializing modules...')
                 if self.modules_json_path == None:
-                    self.vprint(f'No modules path specified, using default: {parent_dir}/modules/')
-                    self.modulespath = f'{parent_dir}/modules/'
+                    self.vprint(f'No modules path specified, using default: {parent_dir}/modules/modules.json')
+                    self.modules_json_path = f'{parent_dir}/modules/modules.json'
                 if self.modules_vectorizer == None:
                     self.vprint(f'No module vectorizer specified, using default: {parent_dir}/module_engine/pickles/tfidf_vectorizer.pkl')
                     self.modules_vectorizer = f'{parent_dir}/module_engine/pickles/tfidf_vectorizer.pkl'

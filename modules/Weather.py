@@ -1,2 +1,2 @@
-def saygex(loc):
-    return f"its working {loc}"
+def test():
+    return f"its working"
