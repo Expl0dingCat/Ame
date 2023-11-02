@@ -6,14 +6,13 @@ import re
 from datetime import datetime
 
 class controller:
-    def __init__(self):
+    def __init__(self, config_path='config.json'):
         # Initialize variables
         try:
-            with open('config.json') as config_file:
+            with open(config_path) as config_file:
                 config = json.load(config_file)
         except Exception as e:
             raise Exception(f'Unable to load config file, ensure you have a config.json in the relative root directory: {e}')
-        
         self.verbose = config['verbose']
         self.log = config['log']
         self.assistant_name = config['assistant_name']
@@ -40,7 +39,7 @@ class controller:
             self.speech_to_text_model = config['stt']['model_path']
         self.modules_enabled = config['modules']['enabled']
         if self.modules_enabled:
-            self.modules = config['modules']['path']
+            self.modules_json_path = config['modules']['json_path']
             self.modules_vectorizer = config['modules']['vectorizer_path']
             self.modules_model = config['modules']['model_path']
         self.weeb = config['weeb']
@@ -82,13 +81,16 @@ class controller:
             if self.modules_enabled:
                 from module_handler import modules
                 self.vprint('Initializing modules...')
+                if self.modules_json_path == None:
+                    self.vprint(f'No modules path specified, using default: {parent_dir}/modules/')
+                    self.modulespath = f'{parent_dir}/modules/'
                 if self.modules_vectorizer == None:
-                    self.vprint('No module vectorizer specified, using default: module_engine/pickles/tfidf_vectorizer.pkl')
-                    self.modules_vectorizer = 'module_engine/pickles/tfidf_vectorizer.pkl'
+                    self.vprint(f'No module vectorizer specified, using default: {parent_dir}/module_engine/pickles/tfidf_vectorizer.pkl')
+                    self.modules_vectorizer = f'{parent_dir}/module_engine/pickles/tfidf_vectorizer.pkl'
                 if self.modules_model == None:
-                    self.vprint('No module model specified, using default: module_engine/pickles/naive_bayes_model.pkl')
-                    self.modules_model = 'module_engine/pickles/naive_bayes_model.pkl'
-                self.modules = modules(self.modules_model, self.modules_vectorizer)
+                    self.vprint(f'No module model specified, using default: {parent_dir}/module_engine/pickles/naive_bayes_model.pkl')
+                    self.modules_model = f'{parent_dir}/module_engine/pickles/naive_bayes_model.pkl'
+                self.modules = modules(self.modules_model, self.modules_vectorizer, self.modules_json_path)
                 self.module_output = None
             else:
                 self.vprint('Modules are disabled. Enable modules in the config file.')
