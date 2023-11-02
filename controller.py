@@ -12,7 +12,7 @@ class controller:
             with open(config_path) as config_file:
                 config = json.load(config_file)
         except Exception as e:
-            raise Exception(f'Unable to load config file, ensure you have a config.json in the relative root directory: {e}')
+            raise Exception(f'Unable to load config file, ensure you have a config.json in the relative root directory: {e} or specify a config file path as an argument for the class controller().')
         self.verbose = config['verbose']
         self.log = config['log']
         self.assistant_name = config['assistant_name']
@@ -118,6 +118,7 @@ class controller:
                     self.vprint(f'No language model path specified, using first in model dir, loading: {model_file_path}')
                     self.ai = ai(model_file_path, use_gpu=self.use_gpu, context=self.context_limit)
                 else:
+                    self.vprint(f'No language model path specified, could not find any existing language model, place a model file (looking for {self.model_file_ext} file, this can be changed in config.json) in {model_directory} or specify the model path in config.json.')
                     raise Exception(f'No language model path specified, could not find any existing language model, place a model file (looking for {self.model_file_ext} file, this can be changed in config.json) in {model_directory} or specify the model path in config.json.')
             else:
                 self.ai = ai(self.language_model_path)
