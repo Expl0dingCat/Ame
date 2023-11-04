@@ -364,13 +364,10 @@ class controller:
             if output == None:
                 self.vprint(f'No module detected, probability: {probability}')
                 undetectable_modules = self.modules.get_undetectable_modules()
-                if undetectable_modules:  # check if there any undetected_modules present
+                if undetectable_modules:
                     self.vprint(f"Undetected modules found: {undetectable_modules}")
                     self.vprint(f"WARNING", logging.WARNING)
                     self.vprint(f"Passing input to LLM to detect modules among {undetectable_modules}")
-                    # HERE, you'll do the logic of passing input to LLM and getting a prediction.
-                    # Depending on how you've implemented your LLM, this code will vary.
-                    # After getting the output from LLM, make sure to set it to output variable.
                     if self.language_enabled:
                         
                         input = str({"user_prompt": str(input), "modules": dict(undetectable_modules)})
