@@ -1,7 +1,7 @@
 [
     {
         "id": 0,
-        "name": "Weather",
+        "name": "example",
         "args": false,
         "function": "test",
         "detectable": true
