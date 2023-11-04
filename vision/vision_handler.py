@@ -6,7 +6,7 @@ class vision:
         pass
 
     def describe(self, input):
-        return "desciption"
+        return "Vision has not been implemented yet. Please check back later."
 
 if __name__ == '__main__':
     print('This is a handler, it is not meant to be run directly.')

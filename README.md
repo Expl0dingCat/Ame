@@ -36,7 +36,7 @@ Ame is in an incomplete state and is being developed by me and only me, expect p
 
 ### Full feature list
 `*` means the feature is yet to be implemented, see **[progress](#progress-v1)**, this list does not include features that may be coming in **[v2](#plans-for-v2-)**.
-- Support for any LLaMA GGML (via llama.cpp)
+- Support for any LLaMA GGML/GGUF (via llama.cpp)
 - Developer-friendly module platform
 - Long-term memory
 - Full customizability
@@ -113,21 +113,15 @@ Long-term memory              |  🟢
 Primary controller            |  🟢
 Module handler                |  🟢
 Server/client interface       |  🟢
+
+### Ext
+
+Component                     | Status 
+----------------------------- | -----
 Client UI                     |  🔴
 Discord interface             |  🔴
 Telegram interface            |  🔴
 Documentation                 |  🟡
-
-### Modules
-
-Module                        | Status 
------------------------------ | -----
-Weather                       |  🟡
-Google Calendar               |  🔴
-News                          |  🔴
-DeepL                         |  🔴
-Shell                         |  🔴
-
 
 ## Plans for `v2` 🔵
 As `v1` is still in development, this section is subject to volatile change, it currently contains features I wanted to include in `v1` but don't have time as well as brand new _concepts_ that may or may not be implemented. If you would like to suggest features for `v2`, please feel free to contact me.

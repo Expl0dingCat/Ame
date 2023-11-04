@@ -4,6 +4,6 @@
         "name": "example",
         "args": false,
         "function": "test",
-        "detectable": true
+        "detectable": false
     }
 ]

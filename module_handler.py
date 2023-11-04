@@ -27,16 +27,19 @@ class modules:
         return predictions[0], max(predicted_probabilities[0])
 
     def load_modules(self):
+        self.undetectable_modules = []
         for module_info in self.module_json:
-            if module_info.get("detectable", False):
-                module_name = module_info["name"]
-                module_file = f"modules/{module_name}.py" 
-                if os.path.isfile(module_file):
-                    try:
-                        module = importlib.import_module(f"modules.{module_name}")
+            module_name = module_info["name"]
+            module_file = f"modules/{module_name}.py" 
+            if os.path.isfile(module_file):
+                try:
+                    module = importlib.import_module(f"modules.{module_name}")
+                    if module_info.get("detectable", False):
                         self.module_map[module_name] = module
-                    except ModuleNotFoundError:
-                        pass
+                    else:
+                        self.undetectable_modules.append(module_name)
+                except ModuleNotFoundError:
+                    pass
 
     def use_module(self, module_name, *args, **kwargs):
         module = self.module_map.get(module_name)
@@ -52,6 +55,9 @@ class modules:
             return f"Module information for '{module_name}' not found in module_json"
         else:
             return f"Module '{module_name}' not found"
+        
+    def get_undetectable_modules(self):
+        return self.undetectable_modules
 
 if __name__ == '__main__':
     print('This is a handler, it is not meant to be run directly.')

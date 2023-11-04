@@ -239,11 +239,11 @@ class controller:
                 desc = None
             output = self.generate_response(f'{input} [user sent an image: {desc}]')
         if self.modules_enabled:
-            detected = self.detect_module(input)
+            detected, args = self.detect_module(input)
             if detected == None:
                 pass
             else:
-                self.module_output = self.run_module(detected)
+                self.module_output = self.run_module(detected, args)
         output = self.generate_response(input)
         if self.tts_enabled:
             audio_output = self.speak(output)
@@ -262,7 +262,7 @@ class controller:
             self.vprint(f'Memory disabled, skipping past conversation selection...')
         prompt = '\n'.join([
         self.personality_prompt if self.personality_prompt else '',
-        f'{self.assistant_name} may use any of the following information to aid her in her responses:',
+        f'{self.assistant_name} may use any of the following information to aid them in their responses:',
         f'Current time: {datetime.now().strftime("%H:%M:%S")}',
         f'Current date: {datetime.now().strftime("%d/%m/%Y")}',
         f'{self.assistant_name} remembers this past conversation that may be relevant to the current conversation:',
@@ -356,16 +356,53 @@ class controller:
         else:
             self.vprint('Vision disabled, enable vision in config.json to use.', logging.WARNING)
             return 'Vision is disabled.'
-
+        
     def detect_module(self, input):
         if self.modules_enabled:
             self.vprint(f'Module detection initiated, processing input: {input}')
             output, probability = self.modules.predict_module(input)
             if output == None:
                 self.vprint(f'No module detected, probability: {probability}')
-            else:
-                self.vprint(f'Module detected: {output}, probability: {probability}')
+                undetectable_modules = self.modules.get_undetectable_modules()
+                if undetectable_modules:  # check if there any undetected_modules present
+                    self.vprint(f"Undetected modules found: {undetectable_modules}")
+                    self.vprint(f"WARNING", logging.WARNING)
+                    self.vprint(f"Passing input to LLM to detect modules among {undetectable_modules}")
+                    # HERE, you'll do the logic of passing input to LLM and getting a prediction.
+                    # Depending on how you've implemented your LLM, this code will vary.
+                    # After getting the output from LLM, make sure to set it to output variable.
+                    if self.language_enabled:
+                        
+                        input = str({"user_prompt": str(input), "modules": dict(undetectable_modules)})
+                        self.vprint(f'Input to LLM: {input}')
 
+                        prompt = '\n'.join([
+                        '### Assistant',
+                        'SYSTEM: {"user_prompt": "Whats the weather like in London right now?","Modules": ["weather (location)", "DeepL (text)", "Lighting control (zone)", "None"]}',
+                        'RESPONSE: {"module": "weather", "args": {"location": "London"}}',
+                        'SYSTEM: {"user_prompt": "Hello!","modules": ["weather (location)", "DeepL (text)", null]}',
+                        'RESPONSE: {"module": null, "args": null}',
+                        f'SYSTEM: {input}',
+                        f'RESPONSE: '
+                        ])
+
+                        self.vprint(f'Starting response generation for module detection...')
+                        text, prompt_usage, response_usage = self.ai.generate(prompt, max_tokens=self.max_tokens, temperature=self.temperature)
+                        
+                        self.vprint(f'Module detected via LLM: {text}, prompt usage: {prompt_usage}, response usage: {response_usage}')
+
+                        selected = json.loads(text)
+                        module = selected['module']
+                        args = selected['args']
+
+                        return module, args
+                
+                    else:
+                        self.vprint(f'Language model is disabled. Unable to detect modules via LLM.', logging.ERROR)
+                        raise Exception('Language model is disabled. Unable to detect modules via LLM.')
+            if output:
+                self.vprint(f'Module detected: {output}, probability: {probability}, args: {self.modules.module_json[output]["args"]}')
+                self.vprint(f'Module detection complete, returning module: {output}')
             return output
         else:
             self.vprint('Modules disabled, enable modules in config.json to use.', logging.WARNING)
