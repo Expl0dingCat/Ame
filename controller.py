@@ -8,44 +8,7 @@ from datetime import datetime
 class controller:
     def __init__(self, config_path='config.json'):
         # Initialize variables
-        try:
-            with open(config_path) as config_file:
-                config = json.load(config_file)
-        except Exception as e:
-            raise Exception(f'Unable to load config file, ensure you have a config.json in the relative root directory: {e} or specify a config file path as an argument for the class controller().')
-        self.verbose = config['verbose']
-        self.log = config['log']
-        self.assistant_name = config['assistant_name']
-        self.memory_enabled = config['memory']['enabled']
-        if self.memory_enabled:
-            self.memory_path = config['memory']['path']
-        self.language_enabled = config['language']['enabled']
-        if self.language_enabled:
-            self.language_model_path = config['language']['model_path']
-            self.max_tokens = config['language']['max_tokens']
-            self.temperature = config['language']['temperature']
-            self.context_limit = config['language']['context_limit']
-            self.virtual_context_limit = config['language']['virtual_context_limit']
-            self.personality_prompt = config['language']['personality_prompt']
-            self.model_file_ext = config['language']['model_file_ext']
-        self.vision_enabled = config['vision']['enabled']
-        if self.vision_enabled:
-            self.vision_model = config['vision']['model_path']
-        self.tts_enabled = config['tts']['enabled']
-        if self.tts_enabled:
-            self.text_to_speech_model = config['tts']['model_path']
-            self.tts_temperature = config['tts']['temperature']
-        self.stt_enabled = config['stt']['enabled']
-        if self.stt_enabled:
-            self.speech_to_text_model = config['stt']['model_path']
-        self.modules_enabled = config['modules']['enabled']
-        if self.modules_enabled:
-            self.modules_json_path = config['modules']['json_path']
-            self.modules_vectorizer = config['modules']['vectorizer_path']
-            self.modules_model = config['modules']['model_path']
-        self.weeb = config['weeb']
-        self.use_gpu = config['use_gpu']
-        self.debug = config['debug']
+        self.reload_config(config_path)
         
         if self.log:
             logging.basicConfig(filename='controller.log', level=logging.INFO)
@@ -95,6 +58,7 @@ class controller:
                 self.module_output = None
             else:
                 self.vprint('Modules are disabled. Enable modules in the config file.')
+            self.eval_mode = False
         else:
             self.vprint('Debug mode is enabled, modules are disabled, eval mode enabled.')
             self.eval_mode = True
@@ -167,9 +131,45 @@ class controller:
 
         self.vprint('All initialized. Controller ready and on standby.')
 
-    def __call__(self):
-        self.vprint('Controller called, re-initializing...')
-        self.__init__()
+    def reload_config(self, config_path='config.json'):
+        try:
+            with open(config_path) as config_file:
+                config = json.load(config_file)
+        except Exception as e:
+            raise Exception(f'Unable to load config file, ensure you have a config.json in the relative root directory: {e} or specify a config file path as an argument for the class controller().')
+        self.verbose = config['verbose']
+        self.log = config['log']
+        self.assistant_name = config['assistant_name']
+        self.memory_enabled = config['memory']['enabled']
+        if self.memory_enabled:
+            self.memory_path = config['memory']['path']
+        self.language_enabled = config['language']['enabled']
+        if self.language_enabled:
+            self.language_model_path = config['language']['model_path']
+            self.max_tokens = config['language']['max_tokens']
+            self.temperature = config['language']['temperature']
+            self.context_limit = config['language']['context_limit']
+            self.virtual_context_limit = config['language']['virtual_context_limit']
+            self.personality_prompt = config['language']['personality_prompt']
+            self.model_file_ext = config['language']['model_file_ext']
+        self.vision_enabled = config['vision']['enabled']
+        if self.vision_enabled:
+            self.vision_model = config['vision']['model_path']
+        self.tts_enabled = config['tts']['enabled']
+        if self.tts_enabled:
+            self.text_to_speech_model = config['tts']['model_path']
+            self.tts_temperature = config['tts']['temperature']
+        self.stt_enabled = config['stt']['enabled']
+        if self.stt_enabled:
+            self.speech_to_text_model = config['stt']['model_path']
+        self.modules_enabled = config['modules']['enabled']
+        if self.modules_enabled:
+            self.modules_json_path = config['modules']['json_path']
+            self.modules_vectorizer = config['modules']['vectorizer_path']
+            self.modules_model = config['modules']['model_path']
+        self.weeb = config['weeb']
+        self.use_gpu = config['use_gpu']
+        self.debug = config['debug']
 
     def vprint(self, print_content, log_type=logging.INFO):
         if self.verbose or self.debug:
@@ -213,11 +213,7 @@ class controller:
                 desc = None
             output = self.generate_response(f'{user_input} [user sent an image: {desc}]')
         if self.modules_enabled:
-            detected = self.detect_module(user_input)
-            if detected == None:
-                pass
-            else:
-                self.module_output = self.run_module(detected)
+            self.module_pipeline(input)
         output = self.generate_response(user_input)
         if self.tts_enabled:
             audio_output = self.speak(output)
@@ -239,11 +235,7 @@ class controller:
                 desc = None
             output = self.generate_response(f'{input} [user sent an image: {desc}]')
         if self.modules_enabled:
-            detected, args = self.detect_module(input)
-            if detected == None:
-                pass
-            else:
-                self.module_output = self.run_module(detected, args)
+            self.module_pipeline(input)
         output = self.generate_response(input)
         if self.tts_enabled:
             audio_output = self.speak(output)
@@ -357,6 +349,13 @@ class controller:
             self.vprint('Vision disabled, enable vision in config.json to use.', logging.WARNING)
             return 'Vision is disabled.'
         
+    def module_pipeline(self, input):
+        detected, args = self.detect_module(input)
+        if detected == None:
+            pass
+        else:
+            self.module_output = self.run_module(detected, args)
+        
     def detect_module(self, input):
         if self.modules_enabled:
             self.vprint(f'Module detection initiated, processing input: {input}')
@@ -365,8 +364,8 @@ class controller:
                 self.vprint(f'No module detected, probability: {probability}')
                 undetectable_modules = self.modules.get_undetectable_modules()
                 if undetectable_modules:
-                    self.vprint(f"Undetected modules found: {undetectable_modules}")
-                    self.vprint(f"WARNING", logging.WARNING)
+                    self.vprint(f"Undetectable modules found: {undetectable_modules}, secondary check required. Initiating LLM-based module detection...")
+                    self.vprint(f"WARNING: Undetectable modules will slow down prompts due to the extra processing time required for checking if called. This is not recommended.", logging.WARNING)
                     self.vprint(f"Passing input to LLM to detect modules among {undetectable_modules}")
                     if self.language_enabled:
                         
@@ -404,6 +403,41 @@ class controller:
         else:
             self.vprint('Modules disabled, enable modules in config.json to use.', logging.WARNING)
             return 'Modules are disabled.'
+        
+    def get_module_args(self, module):
+        if self.modules_enabled:
+            self.vprint(f'Module argument retrieval initiated, processing module: {module}')
+            args = self.modules.get_arguments(module)
+
+            if self.language_enabled:
+                self.vprint(f'Input to LLM: {input}')
+
+                prompt = '\n'.join([
+                '### Assistant',
+                'SYSTEM: {"user_prompt": "Whats the weather like in London right now?","Modules": ["weather (location)", "DeepL (text)", "Lighting control (zone)", "None"]}',
+                'RESPONSE: {"module": "weather", "args": {"location": "London"}}',
+                'SYSTEM: {"user_prompt": "Hello!","modules": ["weather (location)", "DeepL (text)", null]}',
+                'RESPONSE: {"module": null, "args": null}',
+                f'SYSTEM: {input}',
+                f'RESPONSE: '
+                ])
+
+                self.vprint(f'Starting response generation for module detection...')
+                text, prompt_usage, response_usage = self.ai.generate(prompt, max_tokens=self.max_tokens, temperature=self.temperature)
+                
+                self.vprint(f'Module detected via LLM: {text}, prompt usage: {prompt_usage}, response usage: {response_usage}')
+
+                selected = json.loads(text)
+                module = selected['module']
+                args = selected['args']
+        
+            else:
+                self.vprint(f'Language model is disabled. Unable to detect modules via LLM.', logging.ERROR)
+                raise Exception('Language model is disabled. Unable to detect modules via LLM.')
+            
+            self.vprint(f'Module arguments retrieved: {args}')
+
+            return args
 
     def run_module(self, module, *args, **kwargs):
         if self.modules_enabled:

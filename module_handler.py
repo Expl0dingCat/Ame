@@ -58,6 +58,16 @@ class modules:
         
     def get_undetectable_modules(self):
         return self.undetectable_modules
+    
+    def get_arguments(self, module_name):
+        module = self.module_map.get(module_name)
+        if module:
+            for module_info in self.module_json:
+                if module_info["name"] == module_name:
+                    return module_info.get("arguments", [])
+            return f"Module information for '{module_name}' not found in module_json"
+        else:
+            return f"Module '{module_name}' not found"
 
 if __name__ == '__main__':
     print('This is a handler, it is not meant to be run directly.')
