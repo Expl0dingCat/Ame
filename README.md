@@ -10,6 +10,7 @@ Join the **[discord](https://discord.gg/S6h8XYsuZt)** for frequent dev updates, 
 Ame is in an incomplete state and is being developed by me and only me, expect progress to be slow, refer to the **[progress](#progress-v1)** section of the readme for more information. The client and server are unable to communicate the audio files, this has not been implemented yet, audio generation is functional.
 
 ## Announcements 📢
+- **[2023-11-06]** Seeking people willing to help debug and polish ame as well as help write documentation, please contact me if you are interested!
 - **[2023-11-01]** Long time no see! Burnout sucks! I've resumed working on Ame, but at a slower pace, currently finishing up features, then will spend a month or two polishing, then hopefully a beta version can be released, no promises on a release date or feature release timeline, though.
 
 ## Overview 📖
