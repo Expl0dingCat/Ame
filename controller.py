@@ -60,8 +60,25 @@ class controller:
                 self.vprint('Modules are disabled. Enable modules in the config file.')
             self.eval_mode = False
         else:
-            self.vprint('Debug mode is enabled, modules are disabled, eval mode enabled.')
-            self.eval_mode = True
+            if self.modules_override_debug:
+                self.vprint('WARNING: override_debug is enabled, modules will remain active. This is not recommended unless debugging modules.', logging.WARNING)
+                self.vprint('Debug mode enabled, modules enabled, eval mode enabled, override_debug enabled.')
+                from module_handler import modules
+                self.vprint('Initializing modules...')
+                if self.modules_json_path == None:
+                    self.vprint(f'No modules path specified, using default: {parent_dir}/modules/modules.json')
+                    self.modules_json_path = f'{parent_dir}/modules/modules.json'
+                if self.modules_vectorizer == None:
+                    self.vprint(f'No module vectorizer specified, using default: {parent_dir}/module_engine/pickles/tfidf_vectorizer.pkl')
+                    self.modules_vectorizer = f'{parent_dir}/module_engine/pickles/tfidf_vectorizer.pkl'
+                if self.modules_model == None:
+                    self.vprint(f'No module model specified, using default: {parent_dir}/module_engine/pickles/naive_bayes_model.pkl')
+                    self.modules_model = f'{parent_dir}/module_engine/pickles/naive_bayes_model.pkl'
+                self.modules = modules(self.modules_model, self.modules_vectorizer, self.modules_json_path)
+                self.eval_mode = True
+            else:
+                self.vprint('Debug mode is enabled, modules are disabled, eval mode enabled.')
+                self.eval_mode = True
         
         if self.language_enabled:
             if self.personality_prompt:
@@ -167,6 +184,7 @@ class controller:
             self.modules_json_path = config['modules']['json_path']
             self.modules_vectorizer = config['modules']['vectorizer_path']
             self.modules_model = config['modules']['model_path']
+            self.modules_override_debug = config['modules']['override_debug']
         self.weeb = config['weeb']
         self.use_gpu = config['use_gpu']
         self.debug = config['debug']
