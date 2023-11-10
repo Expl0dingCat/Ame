@@ -1,4 +1,579 @@
 query,label
+What's the weather like today?,Weather
+Set the temperature to 22 degrees,Home Assistant
+When is my next meeting?,Google Calendar
+Read me the news headlines,News
+Translate 'Hello' to French,DeepL
+List all connected devices,Home Assistant
+What's the current temperature outside?,Weather
+Add an event to my calendar,Google Calendar
+Play some relaxing music,Home Assistant
+Translate 'Goodbye' to Spanish,DeepL
+What's the forecast for tomorrow?,Weather
+Turn off the lights,Home Assistant
+What are the top news stories today?,News
+Is it going to rain this weekend?,Weather
+Remind me to buy groceries,Google Calendar
+Change the color of the bedroom lights to blue,Home Assistant
+Translate 'Thank you' to German,DeepL
+What's the humidity level right now?,Weather
+List my upcoming appointments,Google Calendar
+Read me the latest sports news,News
+Should I bring an umbrella today?,Weather
+Create a new event for tomorrow,Google Calendar
+Set the brightness of the living room lights to 50%,Home Assistant
+Translate 'Good morning' to Italian,DeepL
+What's the wind speed at the moment?,Weather
+When is my doctor's appointment?,Google Calendar
+Tell me the latest technology news,News
+What's the UV index today?,Weather
+How much time do I have until my next meeting?,Google Calendar
+Play some energetic music,Home Assistant
+Translate 'I love you' to French,DeepL
+What's the current visibility?,Weather
+What's my schedule for tomorrow?,Google Calendar
+Give me the top entertainment news,News
+What's the atmospheric pressure today?,Weather
+Add a reminder to call mom,Google Calendar
+Turn on the air conditioner,Home Assistant
+Translate 'Welcome' to Spanish,DeepL
+What's the sunrise time?,Weather
+What's on my calendar for next week?,Google Calendar
+Tell me the latest business news,News
+What's the sunset time?,Weather
+Cancel my lunch meeting,Google Calendar
+Change the temperature of the thermostat to 20 degrees,Home Assistant
+Translate 'Good night' to German,DeepL
+Find the nearest weather station,Weather
+What's the location of my next appointment?,Google Calendar
+Give me the celebrity gossip news,News
+How high is the chance of rain tomorrow?,Weather
+Set a reminder for tomorrow morning,Google Calendar
+Dim the lights in the living room,Home Assistant
+Translate 'Bonjour' to Italian,DeepL
+Should I wear a jacket today?,Weather
+When is my dentist appointment?,Google Calendar
+Tell me the latest finance news,News
+How hot will it get later today?,Weather
+What's my schedule for next month?,Google Calendar
+Play my favorite playlist,Home Assistant
+Translate 'Je vous remercie' to French,DeepL
+What's the current dew point?,Weather
+What's the date of my anniversary?,Google Calendar
+Read me the latest health news,News
+Is there a chance of thunderstorms tomorrow?,Weather
+Add a reminder to pick up dry cleaning,Google Calendar
+Turn on the coffee machine,Home Assistant
+Translate 'Gracias' to Spanish,DeepL
+What's the current wind direction?,Weather
+What time does my flight depart?,Google Calendar
+Give me the latest world news,News
+How much precipitation is expected in the next hour?,Weather
+Create a new event for next Friday,Google Calendar
+Start the robotic vacuum cleaner,Home Assistant
+Translate 'Buongiorno' to Italian,DeepL
+What's the current visibility in miles?,Weather
+When is my son's soccer game?,Google Calendar
+Tell me the latest fashion news,News
+What's the heat index today?,Weather
+How many days until my vacation?,Google Calendar
+Turn on the TV,Home Assistant
+Translate 'Bonne nuit' to French,DeepL
+What's the current air quality index?,Weather
+Set a reminder for my wife's birthday,Google Calendar
+Give me the latest science news,News
+What's the wind chill factor?,Weather
+When is my next team meeting?,Google Calendar
+Dim the lights in the bedroom,Home Assistant
+Translate 'Guten Tag' to German,DeepL
+What's the current ozone level?,Weather
+What time is my daughter's dance class?,Google Calendar
+Tell me the latest movie news,News
+Where can I find the weather forecast for the next week?,Weather
+Add a reminder to take the car for servicing,Google Calendar
+Turn on the sprinkler system,Home Assistant
+Translate 'Hasta luego' to Spanish,DeepL
+What's the current pollen count?,Weather
+When is my next project deadline?,Google Calendar
+Give me the latest music news,News
+What's the current snow depth?,Weather
+What time is my son's piano lesson?,Google Calendar
+Set the lighting scene to 'Romantic',Home Assistant
+Translate 'Ciao' to Italian,DeepL
+What's the current moon phase?,Weather
+What's the location of my daughter's ballet class?,Google Calendar
+Tell me the latest travel news,News
+What's the current temperature in Celsius?,Weather
+Create a new event for next month,Google Calendar
+Turn off the music,Home Assistant
+Translate 'Merci' to French,DeepL
+What's the current temperature in Fahrenheit?,Weather
+When is my next dentist appointment?,Google Calendar
+Give me the latest celebrity news,News
+What's the current UV index?,Weather
+How much free time do I have today?,Google Calendar
+Dim the lights in the kitchen,Home Assistant
+Translate 'Hola' to Spanish,DeepL
+What's the current wind speed in mph?,Weather
+What time is my doctor's appointment?,Google Calendar
+Tell me the latest sports news headlines,News
+What's the current humidity level?,Weather
+What's on my schedule for the next week?,Google Calendar
+Skip to the next song,Home Assistant
+Translate 'Gute Nacht' to German,DeepL
+What's the current visibility in kilometers?,Weather
+When is my next vacation?,Google Calendar
+Give me the latest technology news,News
+Is it going to be a sunny day tomorrow?,Weather
+Add a reminder to call the insurance company,Google Calendar
+Turn on the lights in the hallway,Home Assistant
+Translate 'Buongiornino' to Italian,DeepL
+What's the current wind direction in degrees?,Weather
+What time is my flight arrival?,Google Calendar
+Tell me the latest business news headlines,News
+What's the current chance of rain?,Weather
+How many days until my birthday?,Google Calendar
+Set the thermostat to eco mode,Home Assistant
+Translate 'Buenas tardes' to Spanish,DeepL
+What's the current air pressure?,Weather
+When is my next doctor's appointment?,Google Calendar
+Give me the top entertainment news headlines,News
+What's the current atmospheric pressure?,Weather
+When is my next lunch meeting?,Google Calendar
+Change the color of the lights in the living room to red,Home Assistant
+Translate 'Buona sera' to Italian,DeepL
+What's the chance of thunderstorms today?,Weather
+What time is my dentist appointment tomorrow?,Google Calendar
+Tell me the latest gossip news,News
+How high is the UV index tomorrow?,Weather
+Remind me to buy groceries on my way home,Google Calendar
+Turn off the air purifier,Home Assistant
+Translate 'Bonjourno' to French,DeepL
+What's the current dew point in degrees?,Weather
+What's the date of my friend's wedding?,Google Calendar
+Give me the latest health news headlines,News
+What's the heat index tomorrow?,Weather
+How many days until my job interview?,Google Calendar
+Play some ambient music,Home Assistant
+Translate 'Gracias amigo' to Spanish,DeepL
+What's the current wind chill factor?,Weather
+What time is my daughter's swim practice?,Google Calendar
+Tell me the latest fashion news headlines,News
+What's the chance of rain in the next hour?,Weather
+Create a new event for next year,Google Calendar
+Change the color of the lights in the bedroom to green,Home Assistant
+Translate 'Buonanotte'to French,DeepL
+What's the current ozone level in parts per billion?,Weather
+What time is my son's soccer game tomorrow?,Google Calendar
+Give me the latest movie news headlines,News
+What's the temperature trend for the next few hours?,Weather
+When is my next team meeting next week?,Google Calendar
+Turn on the lights in the dining room,Home Assistant
+Translate 'Hola amigo' to Spanish,DeepL
+What's the current pollen count in grains per cubic meter?,Weather
+What time is my next project deadline?,Google Calendar
+Tell me the latest music news headlines,News
+What's the current snow depth in inches?,Weather
+What time is my son's piano lesson tomorrow?,Google Calendar
+Set the lighting scene to 'Party',Home Assistant
+Translate 'Ciao bella' to Italian,DeepL
+What's the current moon phase in words?,Weather
+Give me the latest travel news headlines,News
+What's the current temperature in degrees Celsius?,Weather
+When is my next dentist appointment next month?,Google Calendar
+Tell me the latest celebrity news headlines,News
+What's the current UV index on a scale of 1 to 10?,Weather
+How much free time do I have tomorrow?,Google Calendar
+Dim the lights in the bathroom,Home Assistant
+Translate 'Hola guapa' to Spanish,DeepL
+What's the current wind speed in miles per hour?,Weather
+When is my next doctor's appointment next week?,Google Calendar
+Tell me the latest sports news headlines,News
+What's the current humidity level in percentage?,Weather
+What's on my schedule for next month?,Google Calendar
+Skip to the previous song,Home Assistant
+Translate 'Auf Wiedersehen' to German,DeepL
+What's the current visibility in kilometers?,Weather
+When is my next vacation next year?,Google Calendar
+Give me the latest technology news headlines,News
+Is it going to be a cloudy day tomorrow?,Weather
+Add a reminder to call the insurance company next week,Google Calendar
+Turn on the lights in the study room,Home Assistant
+Translate 'Je vous remercie beaucoup' to French,DeepL
+What's the current wind direction in degrees?,Weather
+What time is my flight arrival tomorrow?,Google Calendar
+Tell me the latest business news headlines,News
+What's the current chance of rain in percentage?,Weather
+How many days until my birthday next month?,Google Calendar
+Set the thermostat to vacation mode,Home Assistant
+Translate 'Buenas tardes amigo' to Spanish,DeepL
+What's the current air pressure in pascals?,Weather
+When is my next doctor's appointment next month?,Google Calendar
+Give me the top entertainment news headlines,News
+What's the current atmospheric pressure in hectopascals?,Weather
+When is my next lunch meeting next week?,Google Calendar
+Change the color of the lights in the living room to red,Home Assistant
+Translate 'Buona sera bella' to Italian,DeepL
+What's the chance of thunderstorms today in percentage?,Weather
+What time is my dentist appointment tomorrow?,Google Calendar
+Tell me the latest gossip news headlines,News
+How high is the UV index tomorrow on a scale of 1 to 10?,Weather
+Remind me to buy groceries on my way home next week,Google Calendar
+Turn off the air purifier,Home Assistant
+Translate 'Bonjourno mon ami' to French,DeepL
+What's the current dew point in degrees?,Weather
+What's the date of my friend's wedding next month?,Google Calendar
+Give me the latest health news headlines,News
+What's the heat index tomorrow in degrees?,Weather
+How many days until my job interview next month?,Google Calendar
+Play some ambient music,Home Assistant
+Translate 'Gracias amigo lindo' to Spanish,DeepL
+What's the current wind chill factor in degrees?,Weather
+What time is my daughter's swim practice tomorrow?,Google Calendar
+Tell me the latest fashion news headlines,News
+What's the chance of rain in the next hour in percentage?,Weather
+Create a new event for next year,Google Calendar
+Change the color of the lights in the bedroom to green,Home Assistant
+Translate 'Buonanotte bellezza' to Italian,DeepL
+What's the current moon phase in words?,Weather
+What's the location of my daughter's ballet class next month?,Google Calendar
+Tell me the latest travel news headlines,News
+What's the current temperature in degrees Celsius?,Weather
+When is my next dentist appointment next year?,Google Calendar
+Give me the latest celebrity news headlines,News
+What's the current UV index on a scale of 1 to 10?,Weather
+How much free time do I have tomorrow?,Google Calendar
+Dim the lights in the bathroom,Home Assistant
+Translate 'Hola guapa' to Spanish,DeepL
+What is the forecast for tomorrow?,Weather
+What's the current wind speed in miles per hour?,Weather
+When is my next doctor's appointment next year?,Google Calendar
+Tell me the latest sports news headlines,News
+What's the current humidity level in percentage?,Weather
+What's on my schedule for next month?,Google Calendar
+Whats the weather like next week?,Weather
+query,label
+What's the weather like today?,Weather
+Set the temperature to 22 degrees,Home Assistant
+When is my next meeting?,Google Calendar
+Read me the news headlines,News
+Translate 'Hello' to French,DeepL
+List all connected devices,Home Assistant
+What's the current temperature outside?,Weather
+Add an event to my calendar,Google Calendar
+Play some relaxing music,Home Assistant
+Translate 'Goodbye' to Spanish,DeepL
+What's the forecast for tomorrow?,Weather
+Turn off the lights,Home Assistant
+What are the top news stories today?,News
+Is it going to rain this weekend?,Weather
+Remind me to buy groceries,Google Calendar
+Change the color of the bedroom lights to blue,Home Assistant
+Translate 'Thank you' to German,DeepL
+What's the humidity level right now?,Weather
+List my upcoming appointments,Google Calendar
+Read me the latest sports news,News
+Should I bring an umbrella today?,Weather
+Create a new event for tomorrow,Google Calendar
+Set the brightness of the living room lights to 50%,Home Assistant
+Translate 'Good morning' to Italian,DeepL
+What's the wind speed at the moment?,Weather
+When is my doctor's appointment?,Google Calendar
+Tell me the latest technology news,News
+What's the UV index today?,Weather
+How much time do I have until my next meeting?,Google Calendar
+Play some energetic music,Home Assistant
+Translate 'I love you' to French,DeepL
+What's the current visibility?,Weather
+What's my schedule for tomorrow?,Google Calendar
+Give me the top entertainment news,News
+What's the atmospheric pressure today?,Weather
+Add a reminder to call mom,Google Calendar
+Turn on the air conditioner,Home Assistant
+Translate 'Welcome' to Spanish,DeepL
+What's the sunrise time?,Weather
+What's on my calendar for next week?,Google Calendar
+Tell me the latest business news,News
+What's the sunset time?,Weather
+Cancel my lunch meeting,Google Calendar
+Change the temperature of the thermostat to 20 degrees,Home Assistant
+Translate 'Good night' to German,DeepL
+Find the nearest weather station,Weather
+What's the location of my next appointment?,Google Calendar
+Give me the celebrity gossip news,News
+How high is the chance of rain tomorrow?,Weather
+Set a reminder for tomorrow morning,Google Calendar
+Dim the lights in the living room,Home Assistant
+Translate 'Bonjour' to Italian,DeepL
+Should I wear a jacket today?,Weather
+When is my dentist appointment?,Google Calendar
+Tell me the latest finance news,News
+How hot will it get later today?,Weather
+What's my schedule for next month?,Google Calendar
+Play my favorite playlist,Home Assistant
+Translate 'Je vous remercie' to French,DeepL
+What's the current dew point?,Weather
+What's the date of my anniversary?,Google Calendar
+Read me the latest health news,News
+Is there a chance of thunderstorms tomorrow?,Weather
+Add a reminder to pick up dry cleaning,Google Calendar
+Turn on the coffee machine,Home Assistant
+Translate 'Gracias' to Spanish,DeepL
+What's the current wind direction?,Weather
+What time does my flight depart?,Google Calendar
+Give me the latest world news,News
+How much precipitation is expected in the next hour?,Weather
+Create a new event for next Friday,Google Calendar
+Start the robotic vacuum cleaner,Home Assistant
+Translate 'Buongiorno' to Italian,DeepL
+What's the current visibility in miles?,Weather
+What's my schedule for next month?,Google Calendar
+Tell me the latest travel news,News
+What's the heat index today?,Weather
+How many days until my vacation?,Google Calendar
+Turn on the TV,Home Assistant
+Translate 'Bonne nuit' to French,DeepL
+What's the current air quality index?,Weather
+Set a reminder for my wife's birthday,Google Calendar
+Give me the latest science news,News
+What's the wind chill factor?,Weather
+When is my next team meeting?,Google Calendar
+Dim the lights in the bedroom,Home Assistant
+Translate 'Guten Tag' to German,DeepL
+What's the current ozone level?,Weather
+What time is my daughter's dance class?,Google Calendar
+Tell me the latest movie news,News
+What's the sunset time?,Weather
+Cancel my lunch meeting,Google Calendar
+Change the temperature of the thermostat to 20 degrees,Home Assistant
+Translate 'Good night' to German,DeepL
+Find the nearest weather station,Weather
+What's the location of my next appointment?,Google Calendar
+Give me the celebrity gossip news,News
+How high is the chance of rain tomorrow?,Weather
+Set a reminder for tomorrow morning,Google Calendar
+Dim the lights in the living room,Home Assistant
+Translate 'Bonjour' to Italian,DeepL
+Should I wear a jacket today?,Weather
+When is my dentist appointment?,Google Calendar
+Tell me the latest finance news,News
+How hot will it get later today?,Weather
+What's my schedule for next month?,Google Calendar
+Play my favorite playlist,Home Assistant
+Translate 'Je vous remercie' to French,DeepL
+What's the current dew point?,Weather
+What's the date of my anniversary?,Google Calendar
+Read me the latest health news,News
+Is there a chance of thunderstorms tomorrow?,Weather
+Add a reminder to pick up dry cleaning,Google Calendar
+Turn on the coffee machine,Home Assistant
+Translate 'Gracias' to Spanish,DeepL
+What's the current wind direction?,Weather
+What time does my flight depart?,Google Calendar
+Give me the latest world news,News
+How much precipitation is expected in the next hour?,Weather
+Create a new event for next Friday,Google Calendar
+Start the robotic vacuum cleaner,Home Assistant
+Translate 'Buongiorno' to Italian,DeepL
+What's the current visibility in miles?,Weather
+What's my schedule for next month?,Google Calendar
+Tell me the latest travel news,News
+What's the heat index today?,Weather
+How many days until my vacation?,Google Calendar
+Turn on the TV,Home Assistant
+Translate 'Bonne nuit' to French,DeepL
+What's the current air quality index?,Weather
+Set a reminder for my wife's birthday,Google Calendar
+Give me the latest science news,News
+What's the wind chill factor?,Weather
+When is my next team meeting?,Google Calendar
+Dim the lights in the bedroom,Home Assistant
+Translate 'Guten Tag' to German,DeepL
+What's the current ozone level?,Weather
+What time is my daughter's dance class?,Google Calendar
+Tell me the latest movie news,News
+What's the sunset time?,Weather
+Cancel my lunch meeting,Google Calendar
+Change the temperature of the thermostat to 20 degrees,Home Assistant
+Translate 'Good night' to German,DeepL
+Find the nearest weather station,Weather
+What's the location of my next appointment?,Google Calendar
+Give me the celebrity gossip news,News
+How high is the chance of rain tomorrow?,Weather
+Set a reminder for tomorrow morning,Google Calendar
+Dim the lights in the living room,Home Assistant
+Translate 'Bonjour' to Italian,DeepL
+Should I wear a jacket today?,Weather
+When is my dentist appointment?,Google Calendar
+Tell me the latest finance news,News
+How hot will it get later today?,Weather
+What's my schedule for next month?,Google Calendar
+Play my favorite playlist,Home Assistant
+Translate 'Je vous remercie' to French,DeepL
+What's the current dew point?,Weather
+What's the date of my anniversary?,Google Calendar
+Read me the latest health news,News
+Is there a chance of thunderstorms tomorrow?,Weather
+Add a reminder to pick up dry cleaning,Google Calendar
+Turn on the coffee machine,Home Assistant
+Translate 'Gracias' to Spanish,DeepL
+What's the current wind direction?,Weather
+What time does my flight depart?,Google Calendar
+Give me the latest world news,News
+How much precipitation is expected in the next hour?,Weather
+Create a new event for next Friday,Google Calendar
+Start the robotic vacuum cleaner,Home Assistant
+Translate 'Buongiorno' to Italian,DeepL
+What's the current visibility in miles?,Weather
+What's my schedule for next month?,Google Calendar
+Tell me the latest travel news,News
+What's the heat index today?,Weather
+How many days until my vacation?,Google Calendar
+Turn on the TV,Home Assistant
+Translate 'Bonne nuit' to French,DeepL
+What's the current air quality index?,Weather
+Set a reminder for my wife's birthday,Google Calendar
+Give me the latest science news,News
+What's the wind chill factor?,Weather
+When is my next team meeting?,Google Calendar
+Dim the lights in the bedroom,Home Assistant
+Translate 'Guten Tag' to German,DeepL
+What's the current ozone level?,Weather
+What time does my flight depart?,Google Calendar
+Give me the latest world news,News
+How much precipitation is expected in the next hour?,Weather
+Create a new event for next Friday,Google Calendar
+Start the robotic vacuum cleaner,Home Assistant
+Translate 'Buongiorno' to Italian,DeepL
+What's the current visibility in miles?,Weather
+What's my schedule for next month?,Google Calendar
+Tell me the latest travel news,News
+What's the heat index today?,Weather
+How many days until my vacation?,Google Calendar
+Turn on the TV,Home Assistant
+Translate 'Bonne nuit' to French,DeepL
+What's the current air quality index?,Weather
+Set a reminder for my wife's birthday,Google Calendar
+Give me the latest science news,News
+What's the wind chill factor?,Weather
+When is my next team meeting?,Google Calendar
+Dim the lights in the bedroom,Home Assistant
+Translate 'Guten Tag' to German,DeepL
+What's the current ozone level?,Weather
+What time does my flight depart?,Google Calendar
+Give me the latest world news,News
+How much precipitation is expected in the next hour?,Weather
+Create a new event for next Friday,Google Calendar
+Start the robotic vacuum cleaner,Home Assistant
+Translate 'Buongiorno' to Italian,DeepL
+What's the current visibility in miles?,Weather
+What's my schedule for next month?,Google Calendar
+Tell me the latest travel news,News
+What's the heat index today?,Weather
+How many days until my vacation?,Google Calendar
+Turn on the TV,Home Assistant
+Translate 'Bonne nuit' to French,DeepL
+What's the current air quality index?,Weather
+Set a reminder for my wife's birthday,Google Calendar
+What's the weather like right now?,Weather
+Set the temperature to 22 degrees,Home Assistant
+When is my next meeting?,Google Calendar
+Read me the news headlines,News
+Translate 'Hello' to French,DeepL
+List all connected devices,Home Assistant
+What will the weather be like tomorrow?,Weather
+Add an event to my calendar,Google Calendar
+Play some relaxing music,Home Assistant
+Translate 'Goodbye' to Spanish,DeepL
+What's the forecast for today?,Weather
+Turn off the lights,Home Assistant
+What are the top news stories today?,News
+Is it going to rain this weekend?,Weather
+Remind me to buy groceries,Google Calendar
+Change the color of the bedroom lights to blue,Home Assistant
+Translate 'Thank you' to German,DeepL
+What's the humidity level right now?,Weather
+List my upcoming appointments,Google Calendar
+Read me the latest sports news,News
+Should I bring an umbrella today?,Weather
+Create a new event for tomorrow,Google Calendar
+Set the brightness of the living room lights to 50%,Home Assistant
+Translate 'Good morning' to Italian,DeepL
+What's the wind speed at the moment?,Weather
+When is my doctor's appointment?,Google Calendar
+Tell me the latest technology news,News
+What's the UV index today?,Weather
+How much time do I have until my next meeting?,Google Calendar
+Play some energetic music,Home Assistant
+Translate 'I love you' to French,DeepL
+What's the current visibility?,Weather
+What's my schedule for tomorrow?,Google Calendar
+Give me the top entertainment news,News
+What's the atmospheric pressure today?,Weather
+Add a reminder to call mom,Google Calendar
+Turn on the air conditioner,Home Assistant
+Translate 'Welcome' to Spanish,DeepL
+When will it rain today?,Weather
+What's on my calendar for next week?,Google Calendar
+Tell me the latest business news,News
+When will it snow this week?,Weather
+Cancel my lunch meeting,Google Calendar
+Change the temperature of the thermostat to 20 degrees,Home Assistant
+Translate 'Good night' to German,DeepL
+Find the nearest weather station,Weather
+What's the location of my next appointment?,Google Calendar
+Give me the celebrity gossip news,News
+What's the chance of rain tomorrow?,Weather
+Set a reminder for tomorrow morning,Google Calendar
+Dim the lights in the living room,Home Assistant
+Translate 'Bonjour' to Italian,DeepL
+What's the current wind direction?,Weather
+What time does my flight depart?,Google Calendar
+Tell me the latest world news,News
+How much precipitation is expected in the next hour?,Weather
+Create a new event for next Friday,Google Calendar
+Start the robotic vacuum cleaner,Home Assistant
+Translate 'Buongiorno' to Italian,DeepL
+What's the current visibility in miles?,Weather
+What's my schedule for next month?,Google Calendar
+Give me the top entertainment news,News
+What's the atmospheric pressure today?,Weather
+Add a reminder to call mom,Google Calendar
+Turn on the air conditioner,Home Assistant
+Translate 'Welcome' to Spanish,DeepL
+When will it rain today?,Weather
+What's on my calendar for next week?,Google Calendar
+Tell me the latest business news,News
+When will it snow this week?,Weather
+Cancel my lunch meeting,Google Calendar
+Change the temperature of the thermostat to 20 degrees,Home Assistant
+Translate 'Good night' to German,DeepL
+Find the nearest weather station,Weather
+What's the location of my next appointment?,Google Calendar
+Give me the celebrity gossip news,News
+What's the chance of rain tomorrow?,Weather
+Set a reminder for tomorrow morning,Google Calendar
+Dim the lights in the living room,Home Assistant
+Translate 'Bonjour' to Italian,DeepL
+What's the current wind direction?,Weather
+What time does my flight depart?,Google Calendar
+Tell me the latest world news,News
+How much precipitation is expected in the next hour?,Weather
+Create a new event for next Friday,Google Calendar
+Start the robotic vacuum cleaner,Home Assistant
+Translate 'Buongiorno' to Italian,DeepL
+What's the current visibility in miles?,Weather
+What's my schedule for next month?,Google Calendar
+Give me the top entertainment news,News
+What's the atmospheric pressure today?,Weather
+Add a reminder to call mom,Google Calendar
+Turn on the air conditioner,Home Assistant
+Translate 'Welcome' to Spanish,DeepL
+When will it rain today?,Weather
+What's on my calendar for next week?,Google Calendar
+Tell me the latest business news,News
+When will it snow this week?,Weather
+Cancel my lunch meeting,Google Calendar
 this is a test of the module system,example
 test the module system,example
 test,example

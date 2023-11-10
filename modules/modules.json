@@ -4,6 +4,13 @@
         "name": "example",
         "args": false,
         "function": "test",
+        "detectable": true
+    },
+    {
+        "id": 1,
+        "name": "weather",
+        "args": false,
+        "function": "get_weather",
         "detectable": false
     }
 ]

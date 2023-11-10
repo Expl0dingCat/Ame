@@ -22,7 +22,7 @@ class modules:
         query_vector = self.vectorizer.transform([query])
         predictions = self.loaded_model.predict(query_vector)
         predicted_probabilities = self.loaded_model.predict_proba(query_vector)
-        if max(predicted_probabilities[0]) < 0.7:
+        if max(predicted_probabilities[0]) < 0.9:
             return None, max(predicted_probabilities[0])
         return predictions[0], max(predicted_probabilities[0])
 
