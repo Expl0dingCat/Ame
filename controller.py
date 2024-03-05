@@ -404,20 +404,26 @@ class controller:
                         ])
 
                         self.vprint(f'Starting response generation for module detection...')
-                        text, prompt_usage, response_usage = self.ai.generate(prompt, max_tokens=500, temperature=0, stop=["USER: "])
-
-                        self.vprint(f'LLM output: {text}, prompt usage: {prompt_usage}, response usage: {response_usage}')
-
+                        text, prompt_usage, response_usage = self.ai.generate(prompt, max_tokens=100, temperature=0)
+                        
                         try:
                             llm_output = json.loads(text)
-                            module = llm_output['module']
-                            args = llm_output['args']
-                            self.vprint(f'Module detected via LLM: {module}, arguments: {args}, prompt usage: {prompt_usage}, response usage: {response_usage}')
-                        except json.decoder.JSONDecodeError:
-                            self.vprint(f'LLM output is not valid JSON, unable to detect modules via LLM.', logging.ERROR)
-                            return None, None
+                            self.vprint(f'LLM output: {llm_output}, extracting information...')
 
-                        return module, args
+                            module = llm_output.get('module')
+                            args = llm_output.get('args')
+                            if module is not None:
+                                self.vprint(f'Module detected via LLM: {module}, arguments: {args}, prompt usage: {prompt_usage}, response usage: {response_usage}')
+                                return module, args
+                            else:
+                                self.vprint('LLM output does not contain module information.')
+                                return None, None
+                        except json.JSONDecodeError as e:
+                            self.vprint(f'Error decoding JSON: {e}')
+                            return None, None
+                        except Exception as e:
+                            self.vprint(f'Error: {e}')
+                            return None, None
                 
                     else:
                         self.vprint(f'Language model is disabled. Unable to detect modules via LLM.', logging.ERROR)
@@ -426,7 +432,6 @@ class controller:
                 self.vprint(f'Module detected: {output}, probability: {probability}')
                 self.vprint(f'Module detection complete, returning module: {output}')
             return output
-
         else:
             self.vprint('Modules disabled, enable modules in config.json to use.', logging.WARNING)
             return 'Modules are disabled.'

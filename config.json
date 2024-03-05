@@ -33,7 +33,8 @@
         "enabled": true,
         "json_path": null,
         "model_path": null,
-        "vectorizer_path": null
+        "vectorizer_path": null,
+        "override_debug": false
     },
     "weeb": false,
     "use_gpu": true,
