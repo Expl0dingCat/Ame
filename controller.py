@@ -179,11 +179,11 @@ class controller:
         if self.stt_enabled:
             self.speech_to_text_model = config['stt']['model_path']
         self.modules_enabled = config['modules']['enabled']
-        if self.modules_enabled:
+        self.modules_override_debug = config['modules']['override_debug']
+        if self.modules_enabled or self.modules_override_debug:
             self.modules_json_path = config['modules']['json_path']
             self.modules_vectorizer = config['modules']['vectorizer_path']
             self.modules_model = config['modules']['model_path']
-            self.modules_override_debug = config['modules']['override_debug']
         self.weeb = config['weeb']
         self.use_gpu = config['use_gpu']
         self.debug = config['debug']
@@ -387,32 +387,35 @@ class controller:
                     self.vprint(f"Passing input to LLM to detect modules among {undetectable_modules}")
                     if self.language_enabled:
     
-                        llm_input = str({"user_prompt": str(user_input), "modules": undetectable_modules})
+                        llm_input = str({"user_prompt": str(user_input), "modules": undetectable_modules.append(None)})
                         self.vprint(f'Input to LLM: {llm_input}')
 
                         prompt = '\n'.join([
+                        'Predict which module is being called (and extract arguments) based on user input, return module name and arguments in proper JSON format. Return null if no module is detected or if no arguments are needed.'
                         '### Assistant',
-                        'SYSTEM: {"user_prompt": "Whats the weather like in London right now?","Modules": ["weather (location)", "deepL (text)", "lighting_control", null]}',
-                        'RESPONSE: {"module": "weather", "args": {"location": "London"}}',
-                        'SYSTEM: {"user_prompt": "Hello!","modules": ["weather (location)", "deepL (text)"]}',
-                        'RESPONSE: {"module": null, "args": null}',
-                        'SYSTEM: {"user_prompt": "Could you turn off the lights?", "modules": ["lighting_control", null]}',
-                        'RESPONSE: {"module": "lighting_control", "args": null}',
-                        f'SYSTEM: {llm_input}',
-                        'RESPONSE: '
+                        'USER: {"user_prompt": "Whats the weather like in London right now?","Modules": ["weather (location)", "deepL (text)", "lighting_control", None]}',
+                        'ASSISTANT: {"module": "weather", "args": {"location": "London"}}',
+                        'USER: {"user_prompt": "Hello!","modules": ["weather (location)", "deepL (text)", None]}',
+                        'ASSISTANT: {"module": null, "args": null}',
+                        'USER: {"user_prompt": "Could you turn off the lights?", "modules": ["lighting_control", None]}',
+                        'ASSISTANT: {"module": "lighting_control", "args": null}',
+                        f'USER: {llm_input}',
+                        'ASSISTANT: '
                         ])
 
                         self.vprint(f'Starting response generation for module detection...')
-                        text, prompt_usage, response_usage = self.ai.generate(prompt, max_tokens=100, temperature=0)
-                        
-                        llm_output = json.loads(text)
-                        self.vprint(f'LLM output: {llm_output}, extracting information...')
+                        text, prompt_usage, response_usage = self.ai.generate(prompt, max_tokens=500, temperature=0, stop=["USER: "])
 
-                        self.vprint(f'Module detected via LLM: {module}, arguments: {args}, prompt usage: {prompt_usage}, response usage: {response_usage}')
+                        self.vprint(f'LLM output: {text}, prompt usage: {prompt_usage}, response usage: {response_usage}')
 
-                        selected = json.loads(text)
-                        module = selected['module']
-                        args = selected['args']
+                        try:
+                            llm_output = json.loads(text)
+                            module = llm_output['module']
+                            args = llm_output['args']
+                            self.vprint(f'Module detected via LLM: {module}, arguments: {args}, prompt usage: {prompt_usage}, response usage: {response_usage}')
+                        except json.decoder.JSONDecodeError:
+                            self.vprint(f'LLM output is not valid JSON, unable to detect modules via LLM.', logging.ERROR)
+                            return None, None
 
                         return module, args
                 
@@ -440,20 +443,26 @@ class controller:
                 self.vprint(f'Input to LLM: {llm_input}')
 
                 prompt = '\n'.join([
+                'Extract arguments from a user prompt based on the module selected. Return arguments in proper JSON format. Return null if no arguments are needed.',
                 '### Assistant',
-                'SYSTEM: {"user_prompt": "Whats the weather like in London right now?", "module_selected": "weather", "arguments": ["location"]}}',
-                'RESPONSE: {"args": [{"location": "London"}]}',
-                f'SYSTEM: {llm_input}',
-                f'RESPONSE: '
+                'USER: {"user_prompt": "Whats the weather like in London right now?", "module_selected": "weather", "arguments": ["location"]}}',
+                'ASSISTANT: {"args": [{"location": "London"}]}',
+                f'USER: {llm_input}',
+                'ASSISTANT: '
                 ])
                 
                 self.vprint(f'Starting response generation for module detection...')
-                text, prompt_usage, response_usage = self.ai.generate(prompt, max_tokens=self.max_tokens, temperature=self.temperature)
-                
-                self.vprint(f'Module detected via LLM: {text}, prompt usage: {prompt_usage}, response usage: {response_usage}')
+                text, prompt_usage, response_usage = self.ai.generate(prompt, max_tokens=500, temperature=0, stop=["USER: "])
 
-                selected = json.loads(text)
-                args = selected['args'] 
+                self.vprint(f'LLM output: {text}, prompt usage: {prompt_usage}, response usage: {response_usage}')
+
+                try:
+                    llm_output = json.loads(text)
+                    args = llm_output['args']
+                except json.decoder.JSONDecodeError:
+                    self.vprint(f'LLM output is not valid JSON, unable to detect modules via LLM.', logging.ERROR)
+                    return None, None
+
             else:
                 self.vprint(f'Language model is disabled. Unable to detect modules via LLM.', logging.ERROR)
                 raise Exception('Language model is disabled. Unable to detect modules via LLM.')
