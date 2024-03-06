@@ -59,6 +59,9 @@ class modules:
     def get_undetectable_modules(self):
         return self.undetectable_modules
     
+    def get_detectable_modules(self):
+        return list(self.module_map.keys())
+    
     def get_arguments(self, module_name):
         module = self.module_map.get(module_name)
         if module:
