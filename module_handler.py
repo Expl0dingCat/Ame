@@ -2,13 +2,27 @@ import importlib
 import joblib
 import json
 import os
+import logging
+from logs.logging_config import configure_logging
 
 class modules:
     def __init__(self, model_path, vectorizer_path, modulesjson_path) -> None:
-        self.module_map = {}
-        self.module_json = json.load(open(modulesjson_path, "r"))
 
-        self.load_models(model_path, vectorizer_path)
+        configure_logging()
+        self.logger = logging.getLogger(__name__)
+
+        self.module_map = {}
+        try:
+            self.module_json = json.load(open(modulesjson_path, "r"))
+        except Exception:
+            self.logger.error(f"Error loading modules json, please check the modules json path.")
+
+        try:
+            self.load_models(model_path, vectorizer_path)
+            self.detctable_available = True
+        except Exception:
+            self.logger.error(f"Error loading models, please check the model and vectorizer paths. Detected modules will not be loaded.")
+            self.detectable_available = False
         self.load_modules()
 
     def load_models(self, model_path, vectorizer_path):
@@ -19,12 +33,17 @@ class modules:
         self.vectorizer = joblib.load(vectorizer_filename)
     
     def predict_module(self, query):
-        query_vector = self.vectorizer.transform([query])
-        predictions = self.loaded_model.predict(query_vector)
-        predicted_probabilities = self.loaded_model.predict_proba(query_vector)
-        if max(predicted_probabilities[0]) < 0.9:
-            return None, max(predicted_probabilities[0])
-        return predictions[0], max(predicted_probabilities[0])
+        if self.detectable_available:
+            query_vector = self.vectorizer.transform([query])
+            predictions = self.loaded_model.predict(query_vector)
+            predicted_probabilities = self.loaded_model.predict_proba(query_vector)
+            if max(predicted_probabilities[0]) < 0.9:
+                return None, max(predicted_probabilities[0])
+            return predictions[0], max(predicted_probabilities[0])
+        else:
+            self.logger.warning("Unable to predict modules using classifier, vectorizer and model not loaded.")
+            return None, 100.0
+
 
     def load_modules(self):
         self.undetectable_modules = []
@@ -36,7 +55,11 @@ class modules:
                 try:
                     module = importlib.import_module(f"modules.{module_name}")
                     if module_info.get("detectable", True):
-                        self.detectable_modules.append(module_name)
+                        if self.detectable_available:
+                            self.detectable_modules.append(module_name)
+                        else:
+                            self.logger.warning(f"Module '{module_name}' is detectable but the classifier is not available, module will classified as undetectable.")
+                            self.undetectable_modules.append(module_name)
                     else:
                         self.undetectable_modules.append(module_name)
                     self.module_map[module_name] = module
@@ -54,9 +77,12 @@ class modules:
                     if func and callable(func):
                         return func(*args, **kwargs)
                     else:
-                        return f"Function '{func_name}' not found in module '{module_name}'"
-            return f"Module information for '{module_name}' not found in module_json"
+                        self.logger.warning(f"Function '{func_name}' not found in module '{module_name}'. Unable to call function.")
+                        return f"Function '{func_name}' not found in module '{module_name}'. Unable to call function."
+            self.logger.warning(f"Module information for '{module_name}' not found in module_json.")
+            return f"Module information for '{module_name}' not found in module_json."
         else:
+            self.logger.warning(f"Module '{module_name}' not found.")
             return f"Module '{module_name}' not found"
         
     def get_undetectable_modules(self):
@@ -71,9 +97,11 @@ class modules:
             for module_info in self.module_json:
                 if module_info["name"] == module_name:
                     return module_info.get("args")
-            return f"Module information for '{module_name}' not found in module_json"
+            self.logger.warning(f"Module information for '{module_name}' not found in module_json.")
+            return f"Module information for '{module_name}' not found in module_json."
         else:
-            return f"Module '{module_name}' not found"
+            self.logger.warning(f"Module '{module_name}' not found.")
+            return f"Module '{module_name}' not found."
 
 if __name__ == '__main__':
     print('This is a handler, it is not meant to be run directly.')

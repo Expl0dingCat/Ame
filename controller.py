@@ -3,6 +3,7 @@ import logging
 import json
 import glob
 import re
+from logs.logging_config import configure_logging
 from datetime import datetime
 
 class controller:
@@ -11,7 +12,8 @@ class controller:
         self.reload_config(config_path)
         
         if self.log:
-            logging.basicConfig(filename='controller.log', level=logging.INFO)
+            configure_logging()
+            self.logger = logging.getLogger(__name__)
             self.log = True
         else:
             self.vprint('LOGGING IS DISABLED, THIS IS NOT RECOMMENDED.')
@@ -192,7 +194,7 @@ class controller:
         if self.verbose or self.debug:
             print(f'controller: {print_content}')
         if self.log or self.debug:
-            logging.log(log_type, f'controller: {print_content}')
+            self.logger.log(log_type, f'controller: {print_content}')
     
     def evaluate(self, input):
         if self.eval_mode:
@@ -277,18 +279,26 @@ class controller:
 
     def generate_response(self, user_input):
         self.vprint(f'Generating response: {user_input}')
+        mod_prompt = None
+
         if self.memory_enabled:
             past = self.memory.remember(user_input)
             self.vprint(f'Past conversation chosen: {past}')
         else:
             past = 'None'
             self.vprint(f'Memory disabled, skipping past conversation selection...')
+
+        if self.modules_enabled:
+            if self.module_output:
+                self.vprint(f'Module output detected, including in prompt: {self.module_output}')
+                mod_prompt = self.module_output
+        
         prompt = '\n'.join([
         self.personality_prompt if self.personality_prompt else '',
         f'{self.assistant_name} may use any of the following information to aid them in their responses:',
         f'Current time: {datetime.now().strftime("%H:%M:%S")}',
         f'Current date: {datetime.now().strftime("%d/%m/%Y")}',
-        f'Module output: {self.module_output}',
+        mod_prompt if mod_prompt else '',
         f'{self.assistant_name} remembers this past conversation that may be relevant to the current conversation:',
         *past,
         '### Assistant',
@@ -332,8 +342,8 @@ class controller:
                     self.vprint('Memory disabled, skipping memory saving...')
 
             self.vprint('Response and prompt saved to long term memory. Returning response.')
-            
-            module_output = None
+
+            self.module_output = None
 
             return text
     
@@ -397,8 +407,14 @@ class controller:
     def detect_module(self, user_input):
         if self.modules_enabled:
             self.vprint(f'Module detection initiated, processing input: {user_input}')
-            self.vprint(f'Looking for detectable modules: {self.modules.get_detectable_modules()}')
-            output, probability = self.modules.predict_module(user_input)
+            if self.modules.detectable_available:
+                self.vprint(f'Looking for detectable modules: {self.modules.get_detectable_modules()}')
+                output, probability = self.modules.predict_module(user_input)
+            else:
+                self.vprint(f'No detectable modules found, skipping detection with classifier.')
+                output = None
+                probability = 100.0
+
             with_args = []
             if output == None:
                 self.vprint(f'No module detected, probability: {probability}')
@@ -408,8 +424,12 @@ class controller:
                     self.vprint(f"WARNING: Undetectable modules will slow down prompts due to the extra processing time required for checking if called. This is not recommended.", logging.WARNING)
                     self.vprint(f"Passing input to LLM to detect modules among {undetectable_modules}")
                     for i in undetectable_modules:
-                        arguments = ''.join(self.modules.get_arguments(i))
-                        with_args += [f'{i} ({arguments})']
+                        if self.modules.get_arguments(i):
+                            arguments = ''.join(self.modules.get_arguments(i))
+                            with_args += [f'{i} ({arguments})']
+                        else:
+                            with_args += [i]
+                            
                     if self.language_enabled:
                         llm_input = str({"user_prompt": str(user_input), "modules": with_args})
                         self.vprint(f'Input to LLM: {llm_input}')
