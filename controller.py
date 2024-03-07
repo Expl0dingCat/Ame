@@ -288,6 +288,7 @@ class controller:
         f'{self.assistant_name} may use any of the following information to aid them in their responses:',
         f'Current time: {datetime.now().strftime("%H:%M:%S")}',
         f'Current date: {datetime.now().strftime("%d/%m/%Y")}',
+        f'Module output: {self.module_output}',
         f'{self.assistant_name} remembers this past conversation that may be relevant to the current conversation:',
         *past,
         '### Assistant',
@@ -331,12 +332,14 @@ class controller:
                     self.vprint('Memory disabled, skipping memory saving...')
 
             self.vprint('Response and prompt saved to long term memory. Returning response.')
+            
+            module_output = None
 
             return text
     
         else:
-            self.vprint(f'Languge model disabled, enable language in config.json to use.', logging.WARNING)
-            return 'Language model is disabled.'
+            self.vprint(f'Languge model disabled, unable to generate response. Enable language in config.json to use.', logging.ERROR)
+            raise Exception('Language model is disabled, unable to generate response. Enable language in config.json to use.')
 
     def speak(self, input):
         if self.tts_enabled:
