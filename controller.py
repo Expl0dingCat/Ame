@@ -218,6 +218,9 @@ class controller:
         self.vprint(f'Full system initiated, processing speech input...')
         if self.stt_enabled:
             user_input = self.listen(listen_input)
+        else:
+            self.vprint(f'STT is disabled on the server, cannot process voice input, enable in config.json, ignoring input.', logging.ERROR)
+            return 'STT is disabled.'
         if self.user_cmds(user_input):
             return user_input, f'User command detected: {user_input}', ''
         self.vprint(f'Speech input: {user_input}')
@@ -230,7 +233,7 @@ class controller:
                 desc = None
             output = self.generate_response(f'{user_input} [user sent an image: {desc}]')
         if self.modules_enabled:
-            self.module_pipeline(input)
+            self.module_pipeline(user_input)
         output = self.generate_response(user_input)
         if self.tts_enabled:
             audio_output = self.speak(output)
@@ -369,14 +372,18 @@ class controller:
     def module_pipeline(self, uinput):
         detected, args = self.detect_module(uinput)
         
-        if detected == None:
-            pass
-        else:
-            self.module_output = self.run_module(detected, args)
+        if detected is not None:
+            if args is not None:
+                self.module_output = self.run_module(detected, args)
+            else:
+                self.module_output = self.run_module(detected)
+
+        self.vprint(f'Module pipeline completed, output: {self.module_output}')
         
     def detect_module(self, user_input):
         if self.modules_enabled:
             self.vprint(f'Module detection initiated, processing input: {user_input}')
+            self.vprint(f'Looking for detectable modules: {self.modules.get_detectable_modules()}')
             output, probability = self.modules.predict_module(user_input)
             if output == None:
                 self.vprint(f'No module detected, probability: {probability}')
@@ -386,18 +393,17 @@ class controller:
                     self.vprint(f"WARNING: Undetectable modules will slow down prompts due to the extra processing time required for checking if called. This is not recommended.", logging.WARNING)
                     self.vprint(f"Passing input to LLM to detect modules among {undetectable_modules}")
                     if self.language_enabled:
-    
-                        llm_input = str({"user_prompt": str(user_input), "modules": undetectable_modules.append(None)})
+                        llm_input = str({"user_prompt": str(user_input), "modules": undetectable_modules})
                         self.vprint(f'Input to LLM: {llm_input}')
 
                         prompt = '\n'.join([
-                        'Predict which module is being called (and extract arguments) based on user input, return module name and arguments in proper JSON format. Return null if no module is detected or if no arguments are needed.'
+                        'Predict which module is being called (and extract arguments) based on user input, return module name and arguments in proper JSON format. Return null if no module is detected, the module detected is not listed or if no arguments are needed.'
                         '### Assistant',
-                        'USER: {"user_prompt": "Whats the weather like in London right now?","Modules": ["weather (location)", "deepL (text)", "lighting_control", None]}',
+                        'USER: {"user_prompt": "Whats the weather like in London right now?","Modules": ["weather (location)", "deepL (text)", "lighting_control"]}',
                         'ASSISTANT: {"module": "weather", "args": {"location": "London"}}',
-                        'USER: {"user_prompt": "Hello!","modules": ["weather (location)", "deepL (text)", None]}',
+                        'USER: {"user_prompt": "Hello!","modules": ["weather (location)", "deepL (text)"]}',
                         'ASSISTANT: {"module": null, "args": null}',
-                        'USER: {"user_prompt": "Could you turn off the lights?", "modules": ["lighting_control", None]}',
+                        'USER: {"user_prompt": "Could you turn off the lights?", "modules": ["lighting_control"]}',
                         'ASSISTANT: {"module": "lighting_control", "args": null}',
                         f'USER: {llm_input}',
                         'ASSISTANT: '
@@ -407,8 +413,9 @@ class controller:
                         text, prompt_usage, response_usage = self.ai.generate(prompt, max_tokens=100, temperature=0)
                         
                         try:
-                            llm_output = json.loads(text)
-                            self.vprint(f'LLM output: {llm_output}, extracting information...')
+                            clean_text = text.replace("<0x0A>", "")
+                            self.vprint(f'LLM output: {clean_text}, extracting information...')
+                            llm_output = json.loads(clean_text)
 
                             module = llm_output.get('module')
                             args = llm_output.get('args')
@@ -416,15 +423,14 @@ class controller:
                                 self.vprint(f'Module detected via LLM: {module}, arguments: {args}, prompt usage: {prompt_usage}, response usage: {response_usage}')
                                 return module, args
                             else:
-                                self.vprint('LLM output does not contain module information.')
+                                self.vprint('LLM output does not contain module information (no module detected).')
                                 return None, None
                         except json.JSONDecodeError as e:
-                            self.vprint(f'Error decoding JSON: {e}')
+                            self.vprint(f'Error decoding JSON: {e} (The LLM provided invalid JSON output, skipping module detection)', logging.ERROR)
                             return None, None
                         except Exception as e:
-                            self.vprint(f'Error: {e}')
-                            return None, None
-                
+                            self.vprint(f'Error: {e}', logging.error)
+                            return None, None                
                     else:
                         self.vprint(f'Language model is disabled. Unable to detect modules via LLM.', logging.ERROR)
                         raise Exception('Language model is disabled. Unable to detect modules via LLM.')

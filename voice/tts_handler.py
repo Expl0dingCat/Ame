@@ -33,8 +33,8 @@ class tts:
             pieces += [audio_array, silence.copy()]
 
         audio_array = np.concatenate(pieces)
-        write_wav('voice.wav', SAMPLE_RATE, audio_array)
-        return os.path.abspath('voice.wav')
+        write_wav('ame_speech.wav', SAMPLE_RATE, audio_array)
+        return os.path.abspath('ame_speech.wav')
 
 if __name__ == '__main__':
     print('This is a handler, it is not meant to be run directly.')
