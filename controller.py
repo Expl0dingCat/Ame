@@ -204,11 +204,13 @@ class controller:
             return 'Evaluation disabled. Enable debug mode to use evaluation.'
 
     def clean_output(self, input):
-        remove_formatting = input.replace("<0x0A>", "")
-        matches = re.findall(r'\{[^}]*\}', remove_formatting)
-        valid_json_matches = [match for match in matches if json.loads(match, strict=False)]
+        # remove_formatting = input.replace("<0x0A>", "")
+        # matches = re.findall(r'\{[^}]*\}', remove_formatting)
+        # valid_json_matches = [match for match in matches if json.loads(match, strict=False)]
 
-        output = ''.join(valid_json_matches)
+        # output = ''.join(valid_json_matches)
+        
+        output = re.sub(r'^[^{]*|[^}]*$', '', input)
 
         return output
 
