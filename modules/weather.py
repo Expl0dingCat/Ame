@@ -1,8 +1,6 @@
 import requests
 import json
 
-def call_api():
-    print("API called")
-
-def get_weather():
-    print("Weather module loaded")
+def get_weather(location):
+    print("Weather module loaded.")
+    return f"Sunny, 7C, 20% chance of rain in {location}."

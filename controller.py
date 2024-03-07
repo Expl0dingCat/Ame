@@ -203,6 +203,15 @@ class controller:
             self.vprint(f'Evaluation disabled, ignoring request: {input}')
             return 'Evaluation disabled. Enable debug mode to use evaluation.'
 
+    def clean_output(self, input):
+        remove_formatting = input.replace("<0x0A>", "")
+        matches = re.findall(r'\{[^}]*\}', remove_formatting)
+        valid_json_matches = [match for match in matches if json.loads(match, strict=False)]
+
+        output = ''.join(valid_json_matches)
+
+        return output
+
     def user_cmds(self, input):
         if input == 'clear_conversation':
             self.current = []
@@ -220,7 +229,7 @@ class controller:
             user_input = self.listen(listen_input)
         else:
             self.vprint(f'STT is disabled on the server, cannot process voice input, enable in config.json, ignoring input.', logging.ERROR)
-            return 'STT is disabled.'
+            raise Exception('STT is disabled on the server, cannot process voice input, enable in config.json, ignoring input.')
         if self.user_cmds(user_input):
             return user_input, f'User command detected: {user_input}', ''
         self.vprint(f'Speech input: {user_input}')
@@ -385,6 +394,7 @@ class controller:
             self.vprint(f'Module detection initiated, processing input: {user_input}')
             self.vprint(f'Looking for detectable modules: {self.modules.get_detectable_modules()}')
             output, probability = self.modules.predict_module(user_input)
+            with_args = []
             if output == None:
                 self.vprint(f'No module detected, probability: {probability}')
                 undetectable_modules = self.modules.get_undetectable_modules()
@@ -392,8 +402,11 @@ class controller:
                     self.vprint(f"Undetectable modules found: {undetectable_modules}, secondary check required. Initiating LLM-based module detection...")
                     self.vprint(f"WARNING: Undetectable modules will slow down prompts due to the extra processing time required for checking if called. This is not recommended.", logging.WARNING)
                     self.vprint(f"Passing input to LLM to detect modules among {undetectable_modules}")
+                    for i in undetectable_modules:
+                        arguments = ''.join(self.modules.get_arguments(i))
+                        with_args += [f'{i} ({arguments})']
                     if self.language_enabled:
-                        llm_input = str({"user_prompt": str(user_input), "modules": undetectable_modules})
+                        llm_input = str({"user_prompt": str(user_input), "modules": with_args})
                         self.vprint(f'Input to LLM: {llm_input}')
 
                         prompt = '\n'.join([
@@ -413,8 +426,8 @@ class controller:
                         text, prompt_usage, response_usage = self.ai.generate(prompt, max_tokens=100, temperature=0)
                         
                         try:
-                            clean_text = text.replace("<0x0A>", "")
-                            self.vprint(f'LLM output: {clean_text}, extracting information...')
+                            clean_text = self.clean_output(text)
+                            self.vprint(f'LLM output (RAW): "{text}", LLM output (cleaned): "{clean_text}", extracting information...')
                             llm_output = json.loads(clean_text)
 
                             module = llm_output.get('module')
@@ -423,21 +436,21 @@ class controller:
                                 self.vprint(f'Module detected via LLM: {module}, arguments: {args}, prompt usage: {prompt_usage}, response usage: {response_usage}')
                                 return module, args
                             else:
-                                self.vprint('LLM output does not contain module information (no module detected).')
+                                self.vprint('No module detected by LLM.')
                                 return None, None
                         except json.JSONDecodeError as e:
-                            self.vprint(f'Error decoding JSON: {e} (The LLM provided invalid JSON output, skipping module detection)', logging.ERROR)
+                            self.vprint(f'Error decoding JSON: {e} (The LLM provided invalid JSON output even after cleaning, skipping module detection)', logging.ERROR)
                             return None, None
                         except Exception as e:
                             self.vprint(f'Error: {e}', logging.error)
-                            return None, None                
+                            return None, None           
                     else:
                         self.vprint(f'Language model is disabled. Unable to detect modules via LLM.', logging.ERROR)
                         raise Exception('Language model is disabled. Unable to detect modules via LLM.')
             if output:
                 self.vprint(f'Module detected: {output}, probability: {probability}')
                 self.vprint(f'Module detection complete, returning module: {output}')
-            return output
+            return output, None
         else:
             self.vprint('Modules disabled, enable modules in config.json to use.', logging.WARNING)
             return 'Modules are disabled.'

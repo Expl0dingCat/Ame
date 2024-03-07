@@ -28,16 +28,19 @@ class modules:
 
     def load_modules(self):
         self.undetectable_modules = []
+        self.detectable_modules = []
         for module_info in self.module_json:
             module_name = module_info["name"]
             module_file = f"modules/{module_name}.py" 
             if os.path.isfile(module_file):
                 try:
                     module = importlib.import_module(f"modules.{module_name}")
-                    if module_info.get("detectable", False):
-                        self.module_map[module_name] = module
+                    if module_info.get("detectable", True):
+                        self.detectable_modules.append(module_name)
                     else:
                         self.undetectable_modules.append(module_name)
+                    self.module_map[module_name] = module
+                    
                 except ModuleNotFoundError:
                     pass
 
@@ -60,14 +63,14 @@ class modules:
         return self.undetectable_modules
     
     def get_detectable_modules(self):
-        return list(self.module_map.keys())
+        return self.detectable_modules
     
     def get_arguments(self, module_name):
         module = self.module_map.get(module_name)
         if module:
             for module_info in self.module_json:
                 if module_info["name"] == module_name:
-                    return module_info.get("arguments", [])
+                    return module_info.get("args")
             return f"Module information for '{module_name}' not found in module_json"
         else:
             return f"Module '{module_name}' not found"
