@@ -9,7 +9,7 @@
     {
         "id": 1,
         "name": "weather",
-        "args": ["location"],
+        "args": ["city"],
         "function": "get_weather",
         "detectable": false
     }

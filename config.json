@@ -3,7 +3,7 @@
     "log": true,
     "assistant_name": "Ame",
     "memory": {
-        "enabled": true,
+        "enabled": false,
         "path": null
     },
     "language": {
@@ -17,7 +17,7 @@
         "model_file_ext": ".gguf"
     },
     "vision": {
-        "enabled": true,
+        "enabled": false,
         "model_path": null
     },
     "tts": {
@@ -34,10 +34,11 @@
         "json_path": null,
         "model_path": null,
         "vectorizer_path": null,
-        "override_debug": false
+        "llm_model_path": null,
+        "override_debug": true
     },
     "weeb": false,
     "use_gpu": true,
-    "debug": false
+    "debug": true
 }
   

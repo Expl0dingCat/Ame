@@ -44,7 +44,6 @@ class modules:
             self.logger.warning("Unable to predict modules using classifier, vectorizer and model not loaded.")
             return None, 100.0
 
-
     def load_modules(self):
         self.undetectable_modules = []
         self.detectable_modules = []
@@ -67,7 +66,7 @@ class modules:
                 except ModuleNotFoundError:
                     pass
 
-    def use_module(self, module_name, *args, **kwargs):
+    def use_module(self, module_name, args, **kwargs):
         module = self.module_map.get(module_name)
         if module:
             for module_info in self.module_json:
@@ -75,7 +74,10 @@ class modules:
                     func_name = module_info.get("function", "default_function_name")
                     func = getattr(module, func_name, None)
                     if func and callable(func):
-                        return func(*args, **kwargs)
+                        if isinstance(args, dict):
+                            return func(**args, **kwargs)
+                        else:
+                            return func(args, **kwargs)
                     else:
                         self.logger.warning(f"Function '{func_name}' not found in module '{module_name}'. Unable to call function.")
                         return f"Function '{func_name}' not found in module '{module_name}'. Unable to call function."
@@ -84,7 +86,7 @@ class modules:
         else:
             self.logger.warning(f"Module '{module_name}' not found.")
             return f"Module '{module_name}' not found"
-        
+
     def get_undetectable_modules(self):
         return self.undetectable_modules
     

@@ -186,6 +186,7 @@ class controller:
             self.modules_json_path = config['modules']['json_path']
             self.modules_vectorizer = config['modules']['vectorizer_path']
             self.modules_model = config['modules']['model_path']
+            self.modules_llm_model = config['modules']['llm_model_path']
         self.weeb = config['weeb']
         self.use_gpu = config['use_gpu']
         self.debug = config['debug']
@@ -206,13 +207,13 @@ class controller:
             return 'Evaluation disabled. Enable debug mode to use evaluation.'
 
     def clean_output(self, input):
-        # remove_formatting = input.replace("<0x0A>", "")
         # matches = re.findall(r'\{[^}]*\}', remove_formatting)
         # valid_json_matches = [match for match in matches if json.loads(match, strict=False)]
 
         # output = ''.join(valid_json_matches)
-        
-        output = re.sub(r'^[^{]*|[^}]*$', '', input)
+
+        remove_formatting = input.replace("<0x0A>", "")
+        output = re.sub(r'^[^{]*|[^}]*$', '', remove_formatting)
 
         return output
 
@@ -221,7 +222,7 @@ class controller:
             self.current = []
             self.vprint('User cleared conversation history.')
             return True
-        if input == 'shutdown':
+        elif input == 'shutdown':
             self.vprint('User sent shutdown command.', logging.WARNING)
             exit()
         else:
@@ -298,7 +299,7 @@ class controller:
         f'{self.assistant_name} may use any of the following information to aid them in their responses:',
         f'Current time: {datetime.now().strftime("%H:%M:%S")}',
         f'Current date: {datetime.now().strftime("%d/%m/%Y")}',
-        mod_prompt if mod_prompt else '',
+        f'Extra information: {mod_prompt}' if mod_prompt else '',
         f'{self.assistant_name} remembers this past conversation that may be relevant to the current conversation:',
         *past,
         '### Assistant',
@@ -437,9 +438,9 @@ class controller:
                         prompt = '\n'.join([
                         'Predict which module is being called (and extract arguments) based on user input, return module name and arguments in proper JSON format. Return null if no module is detected, the module detected is not listed or if no arguments are needed.'
                         '### Assistant',
-                        'USER: {"user_prompt": "Whats the weather like in London right now?","Modules": ["weather (location)", "deepL (text)", "lighting_control"]}',
-                        'ASSISTANT: {"module": "weather", "args": {"location": "London"}}',
-                        'USER: {"user_prompt": "Hello!","modules": ["weather (location)", "deepL (text)"]}',
+                        'USER: {"user_prompt": "Whats the weather like in London right now?","Modules": ["weather (city)", "deepL (text)", "lighting_control"]}',
+                        'ASSISTANT: {"module": "weather", "args": {"city": "London"}}',
+                        'USER: {"user_prompt": "Hello!","modules": ["weather (city)", "deepL (text)"]}',
                         'ASSISTANT: {"module": null, "args": null}',
                         'USER: {"user_prompt": "Could you turn off the lights?", "modules": ["lighting_control"]}',
                         'ASSISTANT: {"module": "lighting_control", "args": null}',
@@ -452,7 +453,7 @@ class controller:
                         
                         try:
                             clean_text = self.clean_output(text)
-                            self.vprint(f'LLM output (RAW): "{text}", LLM output (cleaned): "{clean_text}", extracting information...')
+                            self.vprint(f'LLM output (cleaned): "{clean_text}", extracting information...')
                             llm_output = json.loads(clean_text)
 
                             module = llm_output.get('module')
@@ -511,7 +512,6 @@ class controller:
                 except json.decoder.JSONDecodeError:
                     self.vprint(f'LLM output is not valid JSON, unable to detect modules via LLM.', logging.ERROR)
                     return None, None
-
             else:
                 self.vprint(f'Language model is disabled. Unable to detect modules via LLM.', logging.ERROR)
                 raise Exception('Language model is disabled. Unable to detect modules via LLM.')
@@ -520,12 +520,14 @@ class controller:
 
             return args
 
-    def run_module(self, module, *args, **kwargs):
+    def run_module(self, module, args, **kwargs):
         if self.modules_enabled:
-            self.vprint(f'Module system initiated, processing module: {module}')
-            output = self.modules.use_module(module, *args, **kwargs)
+            self.vprint(f'Module system initiated, processing module: {module} with arguments: {args} / {kwargs}')
+            if args is not None:
+                output = self.modules.use_module(module, args, **kwargs)
+            else:
+                output = self.modules.use_module(module, **kwargs)
             self.vprint(f'Module output: {output}')
-
             return output
         else:
             self.vprint('Modules disabled, enable modules in config.json to use.', logging.WARNING)
