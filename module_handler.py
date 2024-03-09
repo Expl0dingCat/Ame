@@ -19,7 +19,7 @@ class modules:
 
         try:
             self.load_models(model_path, vectorizer_path)
-            self.detctable_available = True
+            self.detectable_available = True
         except Exception:
             self.logger.error(f"Error loading models, please check the model and vectorizer paths. Detected modules will not be loaded.")
             self.detectable_available = False
