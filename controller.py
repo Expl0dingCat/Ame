@@ -402,6 +402,8 @@ class controller:
                 self.module_output = self.run_module(detected, args)
             else:
                 self.module_output = self.run_module(detected)
+        else:
+            self.module_output = None
 
         self.vprint(f'Module pipeline completed, output: {self.module_output}')
         
