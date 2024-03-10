@@ -500,7 +500,7 @@ class controller:
                         ]
 
                         self.vprint(f'Starting response generation for module detection...')
-                        text, full, prompt_usage, response_usage = self.ai.generate(prompt, max_tokens=100, temperature=0)
+                        text, full, prompt_usage, response_usage = self.ai.generate(prompt, tokens=100, temp=0)
                         
                         try:
                             clean_text = self.clean_output(text)
