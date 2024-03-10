@@ -98,12 +98,17 @@ class controller:
                 if model_files:
                     model_file_path = model_files[0]
                     self.vprint(f'No language model path specified, using first in model dir, loading: {model_file_path}')
-                    self.ai = ai(model_file_path, use_gpu=self.use_gpu, context=self.context_limit)
+                    self.ai = ai(model_file_path, use_gpu=self.use_gpu, context=self.context_limit, format=self.format)
                 else:
                     self.vprint(f'No language model path specified, could not find any existing language model, place a model file (looking for {self.model_file_ext} file, this can be changed in config.json) in {model_directory} or specify the model path in config.json.')
                     raise Exception(f'No language model path specified, could not find any existing language model, place a model file (looking for {self.model_file_ext} file, this can be changed in config.json) in {model_directory} or specify the model path in config.json.')
             else:
                 self.ai = ai(self.language_model_path)
+
+            if self.system_prompt == None:
+                self.vprint('No system prompt specified, using default (recommended).')
+            else:
+                self.vprint(f"Using custom system prompt:\n'{self.system_prompt}', this is not recommended unless you know what you are doing, module output, time and date won't be passed to LLM.")
 
             if self.personality_prompt == None:
                 self.vprint('No personality prompt specified, not using any.')
@@ -170,6 +175,10 @@ class controller:
             self.virtual_context_limit = config['language']['virtual_context_limit']
             self.personality_prompt = config['language']['personality_prompt']
             self.model_file_ext = config['language']['model_file_ext']
+            self.format = config['language']['format']
+            self.top_k = config['language']['top_k']
+            self.top_p = config['language']['top_p']
+            self.system_prompt = config['language']['system_prompt']
         self.vision_enabled = config['vision']['enabled']
         if self.vision_enabled:
             self.vision_model = config['vision']['model_path']
@@ -286,7 +295,7 @@ class controller:
             past = self.memory.remember(user_input)
             self.vprint(f'Past conversation chosen: {past}')
         else:
-            past = 'None'
+            past = None
             self.vprint(f'Memory disabled, skipping past conversation selection...')
 
         if self.modules_enabled:
@@ -294,7 +303,7 @@ class controller:
                 self.vprint(f'Module output detected, including in prompt: {self.module_output}')
                 mod_prompt = self.module_output
         
-        prompt = '\n'.join([
+        system_prompt = '\n'.join([
         self.personality_prompt if self.personality_prompt else '',
         f'{self.assistant_name} may use any of the following information to aid them in their responses:',
         f'Current time: {datetime.now().strftime("%H:%M:%S")}',
@@ -302,17 +311,32 @@ class controller:
         f'Extra information: {mod_prompt}' if mod_prompt else '',
         f'{self.assistant_name} remembers this past conversation that may be relevant to the current conversation:',
         *past,
-        '### Assistant',
-        *self.current,
-        f'USER: {user_input}',
-        f'{self.assistant_name}: '
         ])
+
+        prompt = [
+            {
+                "role": "system",
+                "content": system_prompt
+            },
+            
+        ]
+        
+        if self.current:
+            for i in self.current:
+                prompt.append(i)
+            
+        prompt.append({
+            "role": "user",
+            "content": user_input
+        })
+    
+        self.vprint(f'Prompt: {prompt}')
 
         if self.language_enabled:
 
-            token_amt = self.ai.get_token_amt(prompt)
+            token_amt = self.ai.get_token_amt(str(prompt))
 
-            if self.ai.get_token_amt(prompt) > self.virtual_context_limit:
+            if token_amt > self.virtual_context_limit:
                 if self.current:
                     self.vprint(f'Prompt usage exceeded virtual context limit of {self.virtual_context_limit} ({token_amt}). Earliest message ("{str(self.current[0])}") in conversation dropped from short-term memory.')
                     self.current.pop(0)
@@ -321,7 +345,7 @@ class controller:
                     past = 'None'
 
             self.vprint(f'Starting response generation...')
-            text, prompt_usage, response_usage = self.ai.generate(prompt, max_tokens=self.max_tokens, temperature=self.temperature)
+            text, full, prompt_usage, response_usage = self.ai.generate(prompt, tokens=self.max_tokens, temp=self.temperature)
 
             self.vprint(f'Response generated: {text}, prompt usage: {prompt_usage}, response usage: {response_usage}')
 
@@ -334,15 +358,15 @@ class controller:
                 self.vprint('Conversation ended. Short-term memory cleared.')
             else:
                 if self.memory_enabled:
-                    self.memory.memorize([f'USER: {user_input}', f'{self.assistant_name}: {text}'])
-                    self.current.append(f'USER: {user_input}')
-                    self.current.append(f'{self.assistant_name}: {text}')
+                    self.memory.memorize([prompt[-1], full])
+                    self.current.append(prompt[-1])
+                    self.current.append(full)
 
                     self.memory.save_memory(self.memory_path)
                 else:
                     self.vprint('Memory disabled, skipping memory saving...')
 
-            self.vprint('Response and prompt saved to long term memory. Returning response.')
+            self.vprint('Response and prompt saved to long term memory (if enabled). Returning response.')
 
             self.module_output = None
 
@@ -434,24 +458,49 @@ class controller:
                             with_args += [i]
                             
                     if self.language_enabled:
+
                         llm_input = str({"user_prompt": str(user_input), "modules": with_args})
                         self.vprint(f'Input to LLM: {llm_input}')
 
-                        prompt = '\n'.join([
-                        'Predict which module is being called (and extract arguments) based on user input, return module name and arguments in proper JSON format. Return null if no module is detected, the module detected is not listed or if no arguments are needed.'
-                        '### Assistant',
-                        'USER: {"user_prompt": "Whats the weather like in London right now?","Modules": ["weather (city)", "deepL (text)", "lighting_control"]}',
-                        'ASSISTANT: {"module": "weather", "args": {"city": "London"}}',
-                        'USER: {"user_prompt": "Hello!","modules": ["weather (city)", "deepL (text)"]}',
-                        'ASSISTANT: {"module": null, "args": null}',
-                        'USER: {"user_prompt": "Could you turn off the lights?", "modules": ["lighting_control"]}',
-                        'ASSISTANT: {"module": "lighting_control", "args": null}',
-                        f'USER: {llm_input}',
-                        'ASSISTANT: '
-                        ])
+                        system_prompt = 'Predict which module is being called (and extract arguments) based on user input, return module name and arguments in proper JSON format. Return null if no module is detected, the module detected is not listed or if no arguments are needed'
+
+                        prompt = [
+                            {
+                                "role": "system",
+                                "content": system_prompt
+                            },
+                            {
+                                "role": "user",
+                                "content": '{"user_prompt": "Whats the weather like in London right now?","Modules": ["weather (city)", "deepL (text)", "lighting_control"]}'
+                            },
+                            {
+                                "role": "assistant",
+                                "content": '{"module": "weather", "args": {"city": "London"}}'
+                            },
+                            {   
+                                "role": "user", 
+                                "content": '{"user_prompt": "Hello!","modules": ["weather (city)", "deepL (text)"]}'
+                            },
+                            {
+                                "role": "assistant",
+                                "content": '{"module": null, "args": null}'
+                            },
+                            {
+                                "role": "user",
+                                "content": '{"user_prompt": "Could you turn off the lights?", "modules": ["lighting_control"]}'
+                            },
+                            {
+                                "role": "assistant",
+                                "content": '{"module": "lighting_control", "args": null}'
+                            },
+                            {
+                                "role": "user",
+                                "content": llm_input
+                            }
+                        ]
 
                         self.vprint(f'Starting response generation for module detection...')
-                        text, prompt_usage, response_usage = self.ai.generate(prompt, max_tokens=100, temperature=0)
+                        text, full, prompt_usage, response_usage = self.ai.generate(prompt, max_tokens=100, temperature=0)
                         
                         try:
                             clean_text = self.clean_output(text)
@@ -494,17 +543,29 @@ class controller:
 
                 self.vprint(f'Input to LLM: {llm_input}')
 
-                prompt = '\n'.join([
-                'Extract arguments from a user prompt based on the module selected. Return arguments in proper JSON format. Return null if no arguments are needed.',
-                '### Assistant',
-                'USER: {"user_prompt": "Whats the weather like in London right now?", "module_selected": "weather", "arguments": ["location"]}}',
-                'ASSISTANT: {"args": [{"location": "London"}]}',
-                f'USER: {llm_input}',
-                'ASSISTANT: '
-                ])
+                system_prompt = 'Extract arguments from a user prompt based on the module selected. Return arguments in proper JSON format. Return null if no arguments are needed.'
+
+                prompt = [
+                    {
+                        "role": "system",
+                        "content": system_prompt
+                    },
+                    {
+                        "role": "user",
+                        "content": '{"user_prompt": "Whats the weather like in London right now?", "module_selected": "weather", "arguments": ["city"]}}'
+                    },
+                    {
+                        "role": "assistant",
+                        "content": '{"args": [{"city": "London"}]}'
+                    },
+                    {   
+                        "role": "user", 
+                        "content": llm_input
+                    }
+                ]
                 
                 self.vprint(f'Starting response generation for module detection...')
-                text, prompt_usage, response_usage = self.ai.generate(prompt, max_tokens=500, temperature=0, stop=["USER: "])
+                text, full, prompt_usage, response_usage = self.ai.generate(prompt, max_tokens=500, temperature=0, stop=["USER: "])
 
                 self.vprint(f'LLM output: {text}, prompt usage: {prompt_usage}, response usage: {response_usage}')
 
