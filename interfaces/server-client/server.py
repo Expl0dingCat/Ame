@@ -1,5 +1,6 @@
 import os
 from aiohttp import web
+from aiohttp_cors import setup, ResourceOptions
 from controller import controller
 
 controller = controller()
@@ -72,12 +73,24 @@ async def handle_command(request):
     return web.json_response(response)
 
 app = web.Application()
+
+cors = setup(app, defaults={
+    "*": ResourceOptions(
+        allow_credentials=True,
+        expose_headers="*",
+        allow_headers="*",
+    )
+})
+
 app.add_routes([web.post('/api/v1/full', handle_full)])
 app.add_routes([web.post('/api/v1/text', handle_text)])
 app.add_routes([web.post('/api/v1/generate', handle_generate)])
 app.add_routes([web.post('/api/v1/listen', handle_listen)])
 app.add_routes([web.post('/api/v1/speak', handle_speak)])
 app.add_routes([web.post('/api/v1/command', handle_command)])
+
+for route in list(app.router.routes()):
+    cors.add(route)
 
 if __name__ == '__main__':
     web.run_app(app, port=6166, host='0.0.0.0')
