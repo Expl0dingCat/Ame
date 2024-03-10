@@ -6,6 +6,5 @@ The server hosts a simple local server, that by default broadcasts on 127.0.0.1:
 
 Server.py MUST be in the root folder in order to import controller. This folder only exists for organization/storage purposes.
 
-## Telegram
-Not implemented yet.
-
+## Discord bot
+Impl
