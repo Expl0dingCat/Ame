@@ -98,7 +98,7 @@ class controller:
                 if model_files:
                     model_file_path = model_files[0]
                     self.vprint(f'No language model path specified, using first in model dir, loading: {model_file_path}')
-                    self.ai = ai(model_file_path, use_gpu=self.use_gpu, context=self.context_limit, format=self.format)
+                    self.ai = ai(model_file_path, use_gpu=self.use_gpu, context=self.context_limit, format=self.format, verbose=self.verbose, layers=self.gpu_layers)
                 else:
                     self.vprint(f'No language model path specified, could not find any existing language model, place a model file (looking for {self.model_file_ext} file, this can be changed in config.json) in {model_directory} or specify the model path in config.json.')
                     raise Exception(f'No language model path specified, could not find any existing language model, place a model file (looking for {self.model_file_ext} file, this can be changed in config.json) in {model_directory} or specify the model path in config.json.')
@@ -178,6 +178,7 @@ class controller:
             self.format = config['language']['format']
             self.top_k = config['language']['top_k']
             self.top_p = config['language']['top_p']
+            self.gpu_layers = config['language']['gpu_layers']
             self.system_prompt = config['language']['system_prompt']
         self.vision_enabled = config['vision']['enabled']
         if self.vision_enabled:

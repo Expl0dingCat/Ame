@@ -14,6 +14,7 @@
         "context_limit": 8000,
         "top_p": 0.95,
         "top_k": 40,
+        "gpu_layers": 45,
         "virtual_context_limit": 7000, 
         "personality_prompt": null,
         "model_file_ext": ".gguf",
