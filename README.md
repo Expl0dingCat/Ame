@@ -1,3 +1,7 @@
+# AME HAS BEEN DISCONTINUED AND SUPERSEEDED BY [MOCHI](https://github.com/mochiagents/mochi)
+
+## LEGACY README BELOW FOR ARCHIVAL PURPOSES ONLY
+
 ![Banner](https://repository-images.githubusercontent.com/663230405/3d3fa7a7-d37c-41a8-9517-793b50ea616d)
 
 ## Setting a new standard for local virtual assistants 💧
